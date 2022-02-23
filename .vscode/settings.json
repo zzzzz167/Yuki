@@ -1,0 +1,16 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "yapf",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "test",
+            "database": "./database/test.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs":"active"
+}

@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "yuki"
+version = "0.1.0"
+description = ""
+authors = ["xiaozhizhen <2742400566@qq.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+graia-ariadne = "^0.5.3"
+graia-saya = "^0.0.15"
+PyYAML = "^6.0"
+peewee = "^3.14.9"
+graia-scheduler = "^0.0.6"
+psutil = "^5.9.0"
+peewee-migrate = "^1.4.7"
+imgkit = "^1.2.2"
+Pillow = "^8.1.2"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+yapf = "^0.32.0"
+autopep8 = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

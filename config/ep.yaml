@@ -1,0 +1,10 @@
+service:
+  host: http://localhost:8080
+  verify_key: 12345678
+
+bot:
+  account: 12345678
+  database: "./"
+
+Permission:
+  Master: 12345678
