@@ -1,36 +1,41 @@
 import time
 from utils.config import init_config
-from peewee import (SqliteDatabase, Model, CharField, BigIntegerField,
-                    BooleanField, IntegerField)
+from peewee import (
+    SqliteDatabase,
+    Model,
+    CharField,
+    BigIntegerField,
+    BooleanField,
+    IntegerField,
+)
 
 config = init_config()
 db = SqliteDatabase(config.bot.database)
 
 
 class BaseModel(Model):
-
     class Meta:
         database = db
 
 
 class GroupUserTalk(BaseModel):
-    '''
+    """
     群组聊天记录
-    '''
+    """
 
     group = CharField()
     qqnum = CharField()
     savetime = BigIntegerField()
     msg = CharField()
 
-    class Meta():
+    class Meta:
         table_name = "GroupUserTalk"
 
 
 class FriendTalk(BaseModel):
-    '''
+    """
     私聊记录
-    '''
+    """
 
     qqnum = CharField()
     savetime = BigIntegerField()
@@ -38,19 +43,20 @@ class FriendTalk(BaseModel):
 
 
 class GroupList(BaseModel):
-    '''
+    """
     群组列表与设置
-    '''
+    """
 
     group_id = CharField()
     group_name = CharField()
     GoodMorning = BooleanField(default=True)
+    Moyu = BooleanField(default=True)
 
 
 class User(BaseModel):
-    '''
+    """
     用户数据
-    '''
+    """
 
     qq_id = CharField()
     qq_name = CharField()
@@ -69,10 +75,7 @@ db.create_tables([User], safe=True)
 
 
 async def addGroupTalk(group, qqnum, msg):
-    gt = GroupUserTalk(group=group,
-                       qqnum=qqnum,
-                       msg=msg,
-                       savetime=(time.time()))
+    gt = GroupUserTalk(group=group, qqnum=qqnum, msg=msg, savetime=(time.time()))
     gt.save()
 
 

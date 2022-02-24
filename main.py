@@ -15,8 +15,8 @@ logger.remove()
 logger.add(sys.stderr, level="INFO")
 logger.add(
     "./cache/logs/debuglogs",
-    rotation='00:00',
-    retention='10 days',
+    rotation="00:00",
+    retention="10 days",
     compression="zip",
 )
 
@@ -30,8 +30,9 @@ saya.install_behaviours(GraiaSchedulerBehaviour(scheduler))
 
 app = Ariadne(
     broadcast=broadcast,
-    connect_info=MiraiSession(config.mirai.host, config.bot.account,
-                              config.mirai.verify_key),
+    connect_info=MiraiSession(
+        config.mirai.host, config.bot.account, config.mirai.verify_key
+    ),
 )
 
 ignore = ["__init__.py", "__pycache__"]

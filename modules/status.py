@@ -30,7 +30,7 @@ async def get_sys_status_sync() -> dict:
         "实体内存占用": v_mem_percent,
         "交换内存占用": s_mem_percent,
         "网络发包": net_sent,
-        "网络收包": net_recv
+        "网络收包": net_recv,
     }
 
 
@@ -44,5 +44,5 @@ async def status(app: Ariadne, friend: Friend):
     if friend.id == config.permission.Master:
         await app.sendMessage(
             friend,
-            MessageChain.create(
-                Plain("目前已知情报为:\n" + str(await get_sys_status_sync()))))
+            MessageChain.create(Plain("目前已知情报为:\n" + str(await get_sys_status_sync()))),
+        )

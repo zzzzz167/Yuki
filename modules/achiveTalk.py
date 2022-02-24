@@ -11,10 +11,9 @@ channel = Channel.current()
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def savegt(group: Group, member: Member, message: MessageChain):
-    await addGroupTalk(group=group.id,
-                       qqnum=member.id,
-                       msg=message.asPersistentString()
-                       )
+    await addGroupTalk(
+        group=group.id, qqnum=member.id, msg=message.asPersistentString()
+    )
 
 
 @channel.use(ListenerSchema(listening_events=[FriendMessage]))

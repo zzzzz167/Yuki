@@ -10,9 +10,12 @@ from graia.ariadne.model import Friend
 from graia.ariadne.event.message import FriendMessage
 from graia.ariadne.message.element import Plain, At, Image
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.event.mirai import (BotInvitedJoinGroupRequestEvent,
-                                       MemberJoinEvent, MemberHonorChangeEvent,
-                                       BotJoinGroupEvent)
+from graia.ariadne.event.mirai import (
+    BotInvitedJoinGroupRequestEvent,
+    MemberJoinEvent,
+    MemberHonorChangeEvent,
+    BotJoinGroupEvent,
+)
 from graia.ariadne.event.lifecycle import ApplicationLaunched
 from graia.broadcast.interrupt.waiter import Waiter
 from graia.broadcast.interrupt import InterruptControl
@@ -24,18 +27,19 @@ bcc = saya.broadcast
 inc = InterruptControl(bcc)
 
 
-@channel.use(ListenerSchema(listening_events=[BotInvitedJoinGroupRequestEvent])
-             )
+@channel.use(ListenerSchema(listening_events=[BotInvitedJoinGroupRequestEvent]))
 async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
     await app.sendFriendMessage(
         config.permission.Master,
-        MessageChain.create([
-            Plain("收到邀请入群事件"),
-            Plain(f"\n邀请者: {invite.supplicant} | {invite.nickname}"),
-            Plain(f"\n群号: {invite.groupId}"),
-            Plain(f"\n群名: {invite.groupName}"),
-            Plain("\n\n请发送“同意”或“拒绝”"),
-        ]),
+        MessageChain.create(
+            [
+                Plain("收到邀请入群事件"),
+                Plain(f"\n邀请者: {invite.supplicant} | {invite.nickname}"),
+                Plain(f"\n群号: {invite.groupId}"),
+                Plain(f"\n群名: {invite.groupName}"),
+                Plain("\n\n请发送“同意”或“拒绝”"),
+            ]
+        ),
     )
 
     @Waiter.create_using_function([FriendMessage])
@@ -89,21 +93,22 @@ async def getMemberJoinEvent(events: MemberJoinEvent, app: Ariadne):
         Image(url=f"http://q1.qlogo.cn/g?b=qq&nk={str(events.member.id)}&s=4"),
         Plain("\n欢迎 "),
         At(events.member.id),
-        Plain(" 加入本群"),
+        Plain(" 加入本群\n可以使用.help命令查看我的使用帮助哦"),
     ]
     await app.sendGroupMessage(events.member.group, MessageChain.create(msg))
 
 
 @channel.use(ListenerSchema(listening_events=[MemberHonorChangeEvent]))
-async def get_MemberHonorChangeEvent(events: MemberHonorChangeEvent,
-                                     app: Ariadne):
+async def get_MemberHonorChangeEvent(events: MemberHonorChangeEvent, app: Ariadne):
     """
     有人群荣誉变动
     """
     msg = [
         At(events.member.id),
-        Plain(f" {'获得了' if events.action == 'achieve' else '失去了'} \
-                群荣誉 {events.honor}!"),
+        Plain(
+            f" {'获得了' if events.action == 'achieve' else '失去了'} \
+                群荣誉 {events.honor}!"
+        ),
     ]
     await app.sendGroupMessage(events.member.group, MessageChain.create(msg))
 
@@ -127,5 +132,5 @@ async def get_BotJoinGroup(app: Ariadne, joingroup: BotJoinGroupEvent):
     await addGroup(joingroup.group.id, joingroup.group.name)
     logger.info("为群组%s进行初始化" % (joingroup.group.name))
     await app.sendGroupMessage(
-        joingroup.group.id,
-        MessageChain([Plain("我是Yuki,很高兴见到大家.\n发送.help可以查看功能列表")]))
+        joingroup.group.id, MessageChain([Plain("我是Yuki,很高兴见到大家.\n发送.help可以查看功能列表")])
+    )

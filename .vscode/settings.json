@@ -1,7 +1,8 @@
 {
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
-    "python.formatting.provider": "yapf",
+    "python.formatting.provider": "black",
+    "python.linting.flake8Args": ["--ignore=E501"],
     "sqltools.connections": [
         {
             "previewLimit": 50,
