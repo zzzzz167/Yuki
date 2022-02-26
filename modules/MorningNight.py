@@ -27,7 +27,7 @@ async def getNews():
                 await asyncio.sleep(3)
 
 
-@channel.use(SchedulerSchema(crontabify("42 12 * * *")))
+@channel.use(SchedulerSchema(crontabify("10 7 * * *")))
 async def goodMorning(app: Ariadne):
     logger.info("开始发送早安消息")
     hito = await getHitokoto()

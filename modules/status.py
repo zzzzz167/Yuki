@@ -37,7 +37,7 @@ async def get_sys_status_sync() -> dict:
 @channel.use(
     ListenerSchema(
         listening_events=[FriendMessage],
-        inline_dispatchers=[Twilight({"head": FullMatch("查看性能统计")})],
+        inline_dispatchers=[Twilight([FullMatch(".status")])],
     )
 )
 async def status(app: Ariadne, friend: Friend):

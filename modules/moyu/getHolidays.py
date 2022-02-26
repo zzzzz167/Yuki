@@ -43,7 +43,7 @@ async def getMoyuMsg() -> str:
         tgDays = caltime(today, i[1])
         if tgDays > 0:
             tl.append(f"距离{i[0]}假期还有{caltime(today, i[1])}天")
-    str1 = f"「摸鱼办」提醒您:\n今天是{getWeekday(today)},上午好,摸鱼人! 工作再累，一定不要忘记摸鱼哦！有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着，钱是老板的,但命是自己的。"
-    str2 = "\n".join(tl[:4])
+    str1 = f"「摸鱼办」提醒您:\n今天是{getWeekday(today)},上午好,摸鱼人! 工作再累，一定不要忘记摸鱼哦！有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着，钱是老板的,但命是自己的。\n"
+    str2 = "\n".join(tl[:3])
     str3 = "\n上班是帮老板赚钱，摸鱼是赚老板的钱! 最后，祝愿天下所有摸鱼人，都能愉快的渡过每一天…"
     return str1 + str2 + str3

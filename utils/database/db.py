@@ -51,6 +51,8 @@ class GroupList(BaseModel):
     group_name = CharField()
     GoodMorning = BooleanField(default=True)
     Moyu = BooleanField(default=True)
+    acgPicture = BooleanField(default=True)
+    acgPictureUse = BigIntegerField(default=0)
 
 
 class User(BaseModel):
@@ -63,6 +65,7 @@ class User(BaseModel):
     favor = IntegerField(default=20)
     days = IntegerField(default=0)
     today = BooleanField(default=False)
+    picture = IntegerField(default=0)
 
     class Meta:
         table_name = "UserInfo"

@@ -132,3 +132,6 @@ bot.yaml
 cache
 test.py
 test.db
+migrations/001_auto.py
+migrations/002_auto.py
+migrations/003_auto.py

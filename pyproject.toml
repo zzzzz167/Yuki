@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-graia-ariadne = "^0.5.3"
+graia-ariadne = "^0.6.0.post1"
 graia-saya = "^0.0.15"
 PyYAML = "^6.0"
 peewee = "^3.14.9"
@@ -19,6 +19,7 @@ Pillow = "^8.1.2"
 fonttools = "^4.29.1"
 beautifulsoup4 = "^4.10.0"
 lxml = "^4.8.0"
+arclet-alconna = "^0.6.4"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"

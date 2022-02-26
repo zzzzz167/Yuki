@@ -14,3 +14,4 @@ class BotConfig(BaseModel):
 class Permission(BaseModel):
     Master: int
     DefaultAcceptInvite: bool
+    favor: int

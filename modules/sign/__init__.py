@@ -1,5 +1,4 @@
 import random
-
 from loguru import logger
 from utils.database.db import User
 from utils.database.db import addUser, getAllUser, getUser, updataUser, reset_sign
@@ -9,15 +8,18 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, Image
-from graia.ariadne.message.parser.twilight import Twilight, UnionMatch
 from graia.ariadne.model import Group, Member
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.scheduler.timers import crontabify
 from graia.scheduler.saya.schema import SchedulerSchema
+from arclet.alconna import Alconna
+from graia.ariadne.message.parser.alconna import AlconnaDispatcher, Arpamar
+
 
 saya = Saya.current()
 channel = Channel.current()
+signAlc = Alconna(headers=[".sign", ".签到"]).help("签到命令")
 
 
 async def sign(app: Ariadne, group: Group, member: Member):
@@ -57,15 +59,16 @@ async def sign(app: Ariadne, group: Group, member: Member):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[Twilight({"head": UnionMatch(".签到", ".sign")})],
+        inline_dispatchers=[AlconnaDispatcher(alconna=signAlc)],
     )
 )
-async def signIn(app: Ariadne, group: Group, member: Member):
-    if str(member.id) not in await getAllUser():
-        await addUser(member.id, member.name)
-        await sign(app, group, member)
-    else:
-        await sign(app, group, member)
+async def signIn(app: Ariadne, group: Group, member: Member, result: Arpamar):
+    if result.matched:
+        if str(member.id) not in await getAllUser():
+            await addUser(member.id, member.name)
+            await sign(app, group, member)
+        else:
+            await sign(app, group, member)
 
 
 @channel.use(SchedulerSchema(crontabify("30 4 * * *")))
