@@ -15,3 +15,8 @@ class Permission(BaseModel):
     Master: int
     DefaultAcceptInvite: bool
     favor: int
+    cd: int
+
+
+class Debug(BaseModel):
+    level: str

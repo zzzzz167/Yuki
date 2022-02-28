@@ -11,16 +11,15 @@ from graia.ariadne.model import MiraiSession
 from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
 
+config = init_config()
 logger.remove()
-logger.add(sys.stderr, level="INFO")
+logger.add(sys.stderr, level=config.debug.level)
 logger.add(
     "./cache/logs/debuglogs",
     rotation="00:00",
     retention="10 days",
     compression="zip",
 )
-
-config = init_config()
 loop = asyncio.new_event_loop()
 broadcast = Broadcast(loop=loop)
 scheduler = GraiaScheduler(loop, broadcast)

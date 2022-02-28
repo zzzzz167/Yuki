@@ -1,5 +1,5 @@
 import yaml
-from .config import MiraiApiHttpConfig, BotConfig, Permission
+from .config import Debug, MiraiApiHttpConfig, BotConfig, Permission
 
 
 def init_config():
@@ -23,3 +23,4 @@ class Config:
         self.mirai = MiraiApiHttpConfig(**config_content["service"])
         self.bot = BotConfig(**config_content["bot"])
         self.permission = Permission(**config_content["Permission"])
+        self.debug = Debug(**config_content["Debug"])

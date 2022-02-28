@@ -108,6 +108,16 @@ async def getGroupSetting(set: BooleanField) -> list:
     return gs_r
 
 
+async def updataGroup(groupnum: int, change: dict):
+    gs = GroupList.update(change).where(GroupList.group_id == str(groupnum))
+    gs.execute()
+
+
+async def getGroup(groupnum: int) -> GroupList:
+    gb = GroupList.get(GroupList.group_id == str(groupnum))
+    return gb
+
+
 async def addUser(id, nickName):
     au = User(qq_id=id, qq_name=nickName)
     au.save()

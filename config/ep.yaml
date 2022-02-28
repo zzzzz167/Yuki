@@ -10,3 +10,7 @@ Permission:
   Master: 12345678
   DefaultAcceptInvite: true
   favor: 40
+  cd: 30
+
+Debug:
+  level: Info
