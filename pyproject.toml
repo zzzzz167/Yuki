@@ -20,6 +20,8 @@ fonttools = "^4.29.1"
 beautifulsoup4 = "^4.10.0"
 lxml = "^4.8.0"
 arclet-alconna = "^0.6.4"
+prompt-toolkit = "^3.0.29"
+rich = "^12.4.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"

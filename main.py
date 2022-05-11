@@ -5,11 +5,15 @@ from loguru import logger
 from utils.config import init_config
 from graia.saya import Saya
 from graia.saya.builtins.broadcast import BroadcastBehaviour
+from graia.ariadne.console.saya import ConsoleBehaviour
 from graia.broadcast import Broadcast
 from graia.ariadne.app import Ariadne
 from graia.ariadne.model import MiraiSession
+from graia.ariadne.console import Console
 from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.styles import Style
 
 config = init_config()
 logger.remove()
@@ -23,9 +27,22 @@ logger.add(
 loop = asyncio.new_event_loop()
 broadcast = Broadcast(loop=loop)
 scheduler = GraiaScheduler(loop, broadcast)
+con = Console(
+    broadcast=broadcast,
+    prompt=HTML(
+        "<botname> YUKI </eroerobot><split_2>></split_2> "
+    ),
+    style=Style(
+        [
+            ("botname", "bg:#61afef fg:#ffffff"),
+            ("split_2", "fg:#61afef"),
+        ]
+    ),
+)
 saya = Saya(broadcast)
 saya.install_behaviours(BroadcastBehaviour(broadcast))
 saya.install_behaviours(GraiaSchedulerBehaviour(scheduler))
+saya.install_behaviours(ConsoleBehaviour(con))
 
 app = Ariadne(
     broadcast=broadcast,
