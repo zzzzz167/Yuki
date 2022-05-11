@@ -1,5 +1,4 @@
 import os
-import sys
 import asyncio
 from loguru import logger
 from utils.config import init_config
@@ -14,10 +13,11 @@ from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.styles import Style
+from prompt_toolkit.patch_stdout import StdoutProxy
 
 config = init_config()
 logger.remove()
-logger.add(sys.stderr, level=config.debug.level)
+logger.add(StdoutProxy(raw=True), level=config.debug.level)
 logger.add(
     "./cache/logs/debuglogs",
     rotation="00:00",
@@ -29,15 +29,14 @@ broadcast = Broadcast(loop=loop)
 scheduler = GraiaScheduler(loop, broadcast)
 con = Console(
     broadcast=broadcast,
-    prompt=HTML(
-        "<botname> YUKI </eroerobot><split_2>></split_2> "
-    ),
+    prompt=HTML("<botname> YUKI </botname><split>></split> "),
     style=Style(
         [
             ("botname", "bg:#61afef fg:#ffffff"),
-            ("split_2", "fg:#61afef"),
+            ("split", "fg:#61afef"),
         ]
     ),
+    replace_logger=False,
 )
 saya = Saya(broadcast)
 saya.install_behaviours(BroadcastBehaviour(broadcast))
@@ -66,4 +65,4 @@ with saya.module_context():
             pass
     logger.info("saya模块加载完成")
 
-loop.run_until_complete(app.lifecycle())
+app.launch_blocking()

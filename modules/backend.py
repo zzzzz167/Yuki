@@ -12,7 +12,7 @@ channel = Channel.current()
 async def stop(app: Ariadne, console: Console):
     res: str = await console.prompt(
         l_prompt=[("class:warn", " 你确定要退出吗? "), ("", " (y/n) ")],
-        style=Style([("warn", "bg:#cccccc fg:#d00000")]),
+        style=Style([("warn", "fg:#d00000")]),
     )
     if res.lower() in ("y", "yes"):
         await app.stop()
