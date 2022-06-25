@@ -3,14 +3,13 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, Source
-from graia.saya import Saya, Channel
+from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from arclet.alconna import Alconna, Args, AnyParam
-from graia.ariadne.message.parser.alconna import AlconnaDispatcher, Arpamar
+from arclet.alconna import Alconna, Args
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
 from utils.hitokoto import getJsonHitokoto
 
 
-saya = Saya.current()
 channel = Channel.current()
 clsdic = {
     "动画": "a",
@@ -27,35 +26,35 @@ clsdic = {
 }
 hitoAlc = Alconna(
     headers=[".hito", "一言"],
-    main_args=Args["content":AnyParam],
-).help("获得一条一言")
+    main_args=Args["content;O", str],
+    help_text="获取一条好句子"
+)
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(alconna=hitoAlc)],
+        inline_dispatchers=[AlconnaDispatcher(alconna=hitoAlc, help_flag="reply")],
     )
 )
-async def groupHelper(app: Ariadne, group: Group, source: Source, result: Arpamar):
-    if result.matched:
-        classification = result.content
-        if classification:
-            if classification in clsdic.keys():
-                rehito = await getJsonHitokoto(c=clsdic[classification])
-                msg = f"{rehito['hitokoto']}\n------「{rehito['from']}」"
-                await app.sendGroupMessage(
-                    group, MessageChain.create([Plain(msg)]), quote=source
-                )
-            else:
-                await app.sendGroupMessage(
-                    group,
-                    MessageChain.create([Plain("没有这个分类哦,看看使用文档再给我发消息吧")]),
-                    quote=source,
-                )
-        else:
-            rehito = await getJsonHitokoto()
+async def groupHelper(
+    app: Ariadne, group: Group, source: Source, result: AlconnaProperty
+):
+    classification = result.result.content
+    if classification:
+        if classification in clsdic.keys():
+            rehito = await getJsonHitokoto(c=clsdic[classification])
             msg = f"{rehito['hitokoto']}\n------「{rehito['from']}」"
-            await app.sendGroupMessage(
-                group, MessageChain.create([Plain(msg)]), quote=source
+            await app.send_group_message(
+                group, MessageChain([Plain(msg)]), quote=source
             )
+        else:
+            await app.send_group_message(
+                group,
+                MessageChain([Plain("没有这个分类哦,看看使用文档再给我发消息吧")]),
+                quote=source,
+            )
+    else:
+        rehito = await getJsonHitokoto()
+        msg = f"{rehito['hitokoto']}\n------「{rehito['from']}」"
+        await app.send_group_message(group, MessageChain([Plain(msg)]), quote=source)

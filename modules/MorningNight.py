@@ -35,7 +35,7 @@ async def goodMorning(app: Ariadne):
     count = 0
     for i in await getGroupSetting(GroupList.GoodMorning):
         count += 1
-        await app.sendGroupMessage(
+        await app.send_group_message(
             int(i),
             MessageChain.create(
                 [Plain(hito + "早安!\n"), Image(data_bytes=dailyNewsData)]
@@ -50,7 +50,7 @@ async def goodNight(app: Ariadne):
     count = 0
     for i in await getGroupSetting(GroupList.GoodMorning):
         count += 1
-        await app.sendGroupMessage(
+        await app.send_group_message(
             int(i),
             MessageChain.create(
                 [

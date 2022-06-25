@@ -29,7 +29,7 @@ inc = InterruptControl(bcc)
 
 @channel.use(ListenerSchema(listening_events=[BotInvitedJoinGroupRequestEvent]))
 async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
-    await app.sendFriendMessage(
+    await app.send_friend_message(
         config.permission.Master,
         MessageChain.create(
             [
@@ -51,36 +51,36 @@ async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
             elif saying == "拒绝":
                 return False
             else:
-                await app.sendFriendMessage(
+                await app.send_friend_message(
                     config.permission.Master,
-                    MessageChain.create([Plain("请发送同意或拒绝")]),
+                    MessageChain([Plain("请发送同意或拒绝")]),
                 )
 
     try:
         if await asyncio.wait_for(inc.wait(waiter), timeout=60):
             await invite.accept()
-            await app.sendFriendMessage(
+            await app.send_friend_message(
                 config.permission.Master,
-                MessageChain.create([Plain("已同意申请")]),
+                MessageChain([Plain("已同意申请")]),
             )
         else:
             await invite.reject("主人拒绝加入该群")
-            await app.sendFriendMessage(
+            await app.send_friend_message(
                 config.permission.Master,
-                MessageChain.create([Plain("已拒绝申请")]),
+                MessageChain([Plain("已拒绝申请")]),
             )
     except asyncio.TimeoutError:
         if config.permission.DefaultAcceptInvite:
             await invite.accept()
-            await app.sendFriendMessage(
+            await app.send_friend_message(
                 config.permission.Master,
-                MessageChain.create([Plain("已自动同意申请")]),
+                MessageChain([Plain("已自动同意申请")]),
             )
         else:
             await invite.reject("由于主人长时间未审核，已自动拒绝")
-            await app.sendFriendMessage(
+            await app.send_friend_message(
                 config.permission.Master,
-                MessageChain.create([Plain("申请超时已自动拒绝")]),
+                MessageChain([Plain("申请超时已自动拒绝")]),
             )
 
 
@@ -95,7 +95,7 @@ async def getMemberJoinEvent(events: MemberJoinEvent, app: Ariadne):
         At(events.member.id),
         Plain(" 加入本群\n可以使用.help命令查看我的使用帮助哦"),
     ]
-    await app.sendGroupMessage(events.member.group, MessageChain.create(msg))
+    await app.send_group_message(events.member.group, MessageChain(msg))
 
 
 @channel.use(ListenerSchema(listening_events=[MemberHonorChangeEvent]))
@@ -110,12 +110,12 @@ async def get_MemberHonorChangeEvent(events: MemberHonorChangeEvent, app: Ariadn
                 群荣誉 {events.honor}!"
         ),
     ]
-    await app.sendGroupMessage(events.member.group, MessageChain.create(msg))
+    await app.send_group_message(events.member.group, MessageChain(msg))
 
 
 @channel.use(ListenerSchema(listening_events=[ApplicationLaunched]))
 async def init_bot(app: Ariadne):
-    gpList = await app.getGroupList()
+    gpList = await app.get_group_list()
     dataBaseList = await getGroupList()
     count = 0
     for i in gpList:
@@ -131,6 +131,6 @@ async def init_bot(app: Ariadne):
 async def get_BotJoinGroup(app: Ariadne, joingroup: BotJoinGroupEvent):
     await addGroup(joingroup.group.id, joingroup.group.name)
     logger.info("为群组%s进行初始化" % (joingroup.group.name))
-    await app.sendGroupMessage(
+    await app.send_group_message(
         joingroup.group.id, MessageChain([Plain("我是Yuki,很高兴见到大家.\n发送.help可以查看功能列表")])
     )

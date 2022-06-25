@@ -20,5 +20,5 @@ async def goodMorning(app: Ariadne):
     msg = await getMoyuMsg()
     for i in await getGroupSetting(GroupList.Moyu):
         count += 1
-        await app.sendGroupMessage(int(i), MessageChain([Plain(msg)]))
+        await app.send_group_message(int(i), MessageChain([Plain(msg)]))
     logger.info("共计发送%s个群聊" % count)

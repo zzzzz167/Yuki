@@ -6,10 +6,9 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain
 from graia.ariadne.message.parser.twilight import Twilight, FullMatch
 from graia.ariadne.model import Friend
-from graia.saya import Saya, Channel
+from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 
-saya = Saya.current()
 channel = Channel.current()
 config = init_config()
 
@@ -37,12 +36,12 @@ async def get_sys_status_sync() -> dict:
 @channel.use(
     ListenerSchema(
         listening_events=[FriendMessage],
-        inline_dispatchers=[Twilight([FullMatch(".status")])],
+        inline_dispatchers=[Twilight(FullMatch(".status"))],
     )
 )
 async def status(app: Ariadne, friend: Friend):
     if friend.id == config.permission.Master:
-        await app.sendMessage(
+        await app.send_friend_message(
             friend,
-            MessageChain.create(Plain("目前已知情报为:\n" + str(await get_sys_status_sync()))),
+            MessageChain(Plain("目前已知情报为:\n" + str(await get_sys_status_sync()))),
         )

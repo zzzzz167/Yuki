@@ -14,19 +14,19 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.scheduler.timers import crontabify
 from graia.scheduler.saya.schema import SchedulerSchema
 from arclet.alconna import Alconna
-from graia.ariadne.message.parser.alconna import AlconnaDispatcher, Arpamar
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 
 
 saya = Saya.current()
 channel = Channel.current()
-signAlc = Alconna(headers=[".sign", ".签到"]).help("签到命令")
+signAlc = Alconna(".sign", help_text="每日签到")
 
 
 async def sign(app: Ariadne, group: Group, member: Member):
     qdUser = await getUser(member.id)
     if qdUser.today:
-        await app.sendGroupMessage(
-            group, MessageChain.create([Plain("今天你已经签到过啦,不要做贪心鬼哦,明天再来吧")])
+        await app.send_group_message(
+            group, MessageChain([Plain("今天你已经签到过啦,不要做贪心鬼哦,明天再来吧")])
         )
     else:
         await updataUser(
@@ -38,9 +38,9 @@ async def sign(app: Ariadne, group: Group, member: Member):
             },
         )
         newdata = await getUser(member.id)
-        await app.sendGroupMessage(
+        await app.send_group_message(
             group,
-            MessageChain.create(
+            MessageChain(
                 [
                     Image(
                         data_bytes=await getMaskBg(
@@ -59,16 +59,15 @@ async def sign(app: Ariadne, group: Group, member: Member):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(alconna=signAlc)],
+        inline_dispatchers=[AlconnaDispatcher(alconna=signAlc, help_flag='reply')],
     )
 )
-async def signIn(app: Ariadne, group: Group, member: Member, result: Arpamar):
-    if result.matched:
-        if str(member.id) not in await getAllUser():
-            await addUser(member.id, member.name)
-            await sign(app, group, member)
-        else:
-            await sign(app, group, member)
+async def signIn(app: Ariadne, group: Group, member: Member):
+    if str(member.id) not in await getAllUser():
+        await addUser(member.id, member.name)
+        await sign(app, group, member)
+    else:
+        await sign(app, group, member)
 
 
 @channel.use(SchedulerSchema(crontabify("30 4 * * *")))

@@ -7,11 +7,11 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-graia-ariadne = "^0.6.0.post1"
-graia-saya = "^0.0.15"
+graia-ariadne = {extras = ["full"], version = "^0.7.14"}
+graia-saya = "^0.0.16"
 PyYAML = "^6.0"
 peewee = "^3.14.9"
-graia-scheduler = "^0.0.6"
+graia-scheduler = "^0.0.8"
 psutil = "^5.9.0"
 peewee-migrate = "^1.4.7"
 imgkit = "^1.2.2"
@@ -19,7 +19,7 @@ Pillow = "^8.1.2"
 fonttools = "^4.29.1"
 beautifulsoup4 = "^4.10.0"
 lxml = "^4.8.0"
-arclet-alconna = "^0.6.4"
+arclet-alconna = {extras = ["full"], version = "^1.0.0"}
 prompt-toolkit = "^3.0.29"
 rich = "^12.4.1"
 

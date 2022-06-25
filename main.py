@@ -5,9 +5,9 @@ from utils.config import init_config
 from graia.saya import Saya
 from graia.saya.builtins.broadcast import BroadcastBehaviour
 from graia.ariadne.console.saya import ConsoleBehaviour
+from graia.ariadne.entry import config
 from graia.broadcast import Broadcast
 from graia.ariadne.app import Ariadne
-from graia.ariadne.model import MiraiSession
 from graia.ariadne.console import Console
 from graia.scheduler import GraiaScheduler
 from graia.scheduler.saya import GraiaSchedulerBehaviour
@@ -15,9 +15,10 @@ from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.styles import Style
 from prompt_toolkit.patch_stdout import StdoutProxy
 
-config = init_config()
+
+bot_config = init_config()
 logger.remove()
-logger.add(StdoutProxy(raw=True), level=config.debug.level)
+logger.add(StdoutProxy(raw=True), level=bot_config.debug.level)
 logger.add(
     "./cache/logs/debuglogs",
     rotation="00:00",
@@ -43,11 +44,9 @@ saya.install_behaviours(BroadcastBehaviour(broadcast))
 saya.install_behaviours(GraiaSchedulerBehaviour(scheduler))
 saya.install_behaviours(ConsoleBehaviour(con))
 
+Ariadne.config(loop=loop, broadcast=broadcast)
 app = Ariadne(
-    broadcast=broadcast,
-    connect_info=MiraiSession(
-        config.mirai.host, config.bot.account, config.mirai.verify_key
-    ),
+    config(account=bot_config.bot.account, verify_key=bot_config.mirai.verify_key),
 )
 
 ignore = ["__init__.py", "__pycache__"]
@@ -65,4 +64,8 @@ with saya.module_context():
             pass
     logger.info("saya模块加载完成")
 
-app.launch_blocking()
+if __name__ == "__main__":
+    try:
+        app.launch_blocking()
+    except KeyboardInterrupt:
+        exit()
