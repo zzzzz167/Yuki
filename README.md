@@ -17,11 +17,13 @@ YUKI来源于[《美好的每一天～不连续的存在～》](https://zh.moegi
 
 该项目由于本人学业问题更新速度可能会较慢,所以当您发现bug或是使用问题时,请留下您的ISSUE,当我有时间时~~(潜入学校机房时~~,就会速度修复啦
 
-~~交出你的star~~
+交出你的star
 
 # What can it do?
 
-- 色色!!!
+- 色色
+  - 色图
+  - 搜各种二刺猿玩意
 - 一言
 - 签到图生成
 - 每日早报
@@ -35,6 +37,17 @@ YUKI来源于[《美好的每一天～不连续的存在～》](https://zh.moegi
 
 # Thanks
 
+听我说👂👂👂谢谢你🙏🙏🙏因为有你👉👉👉温暖了四季🌈🌈🌈
+
 - [Mirai](https://github.com/mamoe/mirai): 高效率 QQ 机器人框架 / High-performance bot framework for Tencent QQ
 - [Mirai-api-http](https://github.com/project-mirai/mirai-api-http): Mirai HTTP API (console) plugin
 - [Graia Ariadne](https://github.com/GraiaProject/Ariadne): 一个优雅且完备的 Python QQ 自动化框架。基于 Mirai API HTTP v2。
+
+同样的以下的这些bot也在开发过程中提供了借鉴之处
+
+- [`ABot`](https://github.com/djkcyl/ABot-Graia/): 一个使用 Graia-Ariadne 搭建的 QQ 功能性机器人
+- [`sagiri-bot`](https://github.com/SAGIRI-kawaii/sagiri-bot): 是纱雾bot(好耶!)
+- [`redbot`](https://github.com/Redlnn/redbot):一个以 Graia-Ariadne 框架为基础的 QQ 机器人
+- [`A_Simple_QQ_Bot`](https://github.com/I-love-study/A_Simple_QQ_Bot): 菜鸡的BOT
+
+感谢所有在QQ群里解决我弱智问题的人
