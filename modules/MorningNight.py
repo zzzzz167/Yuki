@@ -37,7 +37,7 @@ async def goodMorning(app: Ariadne):
         count += 1
         await app.send_group_message(
             int(i),
-            MessageChain.create(
+            MessageChain(
                 [Plain(hito + "早安!\n"), Image(data_bytes=dailyNewsData)]
             ),
         )
@@ -52,7 +52,7 @@ async def goodNight(app: Ariadne):
         count += 1
         await app.send_group_message(
             int(i),
-            MessageChain.create(
+            MessageChain(
                 [
                     Plain("睡觉小助手提示您: 11点了子时睡觉养护阳气，百病不起。\n熬夜伤身体，早睡从我做起~\nGood Night!"),
                 ]

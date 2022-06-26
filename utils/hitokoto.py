@@ -2,12 +2,12 @@ import aiohttp
 
 
 async def getHitokoto() -> str:  # aiohttp必须放在异步函数中使用
-    async with aiohttp.request("GET", "https://international.v1.hitokoto.cn/?encode=text") as resp:
+    async with aiohttp.request("GET", "https://v1.hitokoto.cn/?encode=text") as resp:
         return await resp.text()
 
 
 async def getAppointHitokoto(**val) -> str:
-    url = "https://international.v1.hitokoto.cn/?encode=text"
+    url = "https://v1.hitokoto.cn/?encode=text"
     if "c" in val.keys():
         url += "&c=%s" % str(val["c"])
     if "min_length" in val.keys():
@@ -19,7 +19,7 @@ async def getAppointHitokoto(**val) -> str:
 
 
 async def getJsonHitokoto(**val):
-    url = "https://international.v1.hitokoto.cn/?encode=json"
+    url = "https://v1.hitokoto.cn/?encode=json"
     if "c" in val.keys():
         url += "&c=%s" % str(val["c"])
     if "min_length" in val.keys():
