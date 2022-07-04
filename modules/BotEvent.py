@@ -35,8 +35,8 @@ async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
             [
                 Plain("收到邀请入群事件"),
                 Plain(f"\n邀请者: {invite.supplicant} | {invite.nickname}"),
-                Plain(f"\n群号: {invite.groupId}"),
-                Plain(f"\n群名: {invite.groupName}"),
+                Plain(f"\n群号: {invite.source_group}"),
+                Plain(f"\n群名: {invite.group_name}"),
                 Plain("\n\n请发送“同意”或“拒绝”"),
             ]
         ),

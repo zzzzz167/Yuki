@@ -29,7 +29,7 @@ async def groupHelper(app: Ariadne, group: Group, source: Source):
             [
                 Plain(
                     manager.all_command_help(
-                        header="Yuko使用帮助",
+                        header="Yuki使用帮助",
                         footer="任意命令均可使用 .命令名 --help 查看更详细的帮助。",
                     )
                 )
