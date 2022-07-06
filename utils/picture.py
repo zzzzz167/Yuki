@@ -20,7 +20,14 @@ async def getMaskBg(
     avatar = IMG.open(BytesIO(await getAvatar(qqnum))).resize(
         (pic_size, pic_size), IMG.ANTIALIAS
     )
-    bg = avatar.copy().filter(ImageFilter.GaussianBlur(radius=7))
+    if "\u200b" in nickname:
+        nickname = "    "
+    if avatar.mode == "1":
+        bg = IMG.new("RGB", avatar.size, "white")
+        bg.paste(avatar)
+        bg.filter(ImageFilter.GaussianBlur(radius=7))
+    else:
+        bg = avatar.copy().filter(ImageFilter.GaussianBlur(radius=7))
     # 头像框粘贴
     ab = IMG.open("./source/magic-circle.png").resize(
         map(lambda x: int(x * 7 / 4), (avatar_size - 80, avatar_size - 80)),
