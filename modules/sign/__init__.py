@@ -1,5 +1,6 @@
 import random
 from loguru import logger
+from utils.control import cheakBan
 from utils.database.db import User
 from utils.database.db import addUser, getAllUser, getUser, updataUser, reset_sign
 from utils.hitokoto import getAppointHitokoto
@@ -60,6 +61,7 @@ async def sign(app: Ariadne, group: Group, member: Member):
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(alconna=signAlc, help_flag='reply')],
+        decorators=[cheakBan()]
     )
 )
 async def signIn(app: Ariadne, group: Group, member: Member):

@@ -8,6 +8,7 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.manager import CommandManager
+from utils.control import cheakBan
 
 
 saya = Saya.current()
@@ -20,7 +21,8 @@ manager = CommandManager()
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(alconna=helperAlc)],
-    )
+        decorators=[cheakBan()],
+    ),
 )
 async def groupHelper(app: Ariadne, group: Group, source: Source):
     await app.send_group_message(

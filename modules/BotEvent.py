@@ -45,7 +45,7 @@ async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
     @Waiter.create_using_function([FriendMessage])
     async def waiter(waiter_friend: Friend, waiter_message: MessageChain):
         if waiter_friend.id == config.permission.Master:
-            saying = waiter_message.asDisplay()
+            saying = waiter_message.display
             if saying == "同意":
                 return True
             elif saying == "拒绝":

@@ -11,8 +11,8 @@ from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args, Option
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
-from utils.control import cheakAcgpicture
-from utils.database.db import updataGroup, getUser, GroupList
+from utils.control import cheakAcgpicture, cheakBan
+from utils.database.db import updataGroup, getUser, GroupList, User
 
 saya = Saya.current()
 channel = Channel.current()
@@ -80,14 +80,20 @@ async def searchGet(tag: str, level: str = None):
         inline_dispatchers=[
             AlconnaDispatcher(alconna=randomPictureAlc, help_flag="reply")
         ],
-        decorators=[cheakAcgpicture()],
+        decorators=[cheakAcgpicture(), cheakBan()],
     )
 )
 async def randomPicture(
     app: Ariadne, group: Group, member: Member, source: Source, result: AlconnaProperty
 ):
-    if result.result.content == "r18":
+    try:
         user = await getUser(member.id)
+    except User.DoesNotExist:
+        await app.send_group_message(
+            group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :)")), quote=source
+        )
+        return
+    if result.result.content == "r18":
         if user.favor >= config.permission.favor:
             await app.send_group_message(group, MessageChain("色小鬼,色图马上就来喽,稍等一下"))
             await updataGroup(group.id, {GroupList.acgPictureUse: time.time()})
@@ -132,7 +138,7 @@ async def randomPicture(
         inline_dispatchers=[
             AlconnaDispatcher(alconna=searchPictureAlc, help_flag="reply")
         ],
-        decorators=[cheakAcgpicture()],
+        decorators=[cheakAcgpicture(), cheakBan()],
     )
 )
 async def searchPicture(
@@ -142,7 +148,13 @@ async def searchPicture(
     contents = arp.content[0]
     level = arp.query("level.level")
     er = False
-    user = await getUser(member.id)
+    try:
+        user = await getUser(member.id)
+    except User.DoesNotExist:
+        await app.send_group_message(
+            group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :)")), quote=source
+        )
+        return
     if contents is None:
         er = True
         await app.send_group_message(

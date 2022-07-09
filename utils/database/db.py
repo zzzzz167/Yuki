@@ -9,6 +9,7 @@ from peewee import (
     IntegerField,
 )
 
+day_sec = 86400
 config = init_config()
 db = SqliteDatabase(config.bot.database)
 
@@ -71,10 +72,26 @@ class User(BaseModel):
         table_name = "UserInfo"
 
 
+class BanList(BaseModel):
+    """
+    黑名单列表,我实在忍不下去了
+    """
+
+    qq_id = CharField()
+    ban_days = CharField()
+    ban_tip = CharField()
+    start_time = BigIntegerField(default=0)
+    warn_today = BooleanField(default=False)
+
+    class Meta:
+        table_name = "BanList"
+
+
 db.create_tables([GroupUserTalk], safe=True)
 db.create_tables([FriendTalk], safe=True)
 db.create_tables([GroupList], safe=True)
 db.create_tables([User], safe=True)
+db.create_tables([BanList], safe=True)
 
 
 async def addGroupTalk(group, qqnum, msg):
@@ -143,4 +160,43 @@ async def updataUser(qqnum: int, change: dict):
 
 async def reset_sign():
     User.update(today=False).where(User.today).execute()
+    return
+
+
+async def addBanList(
+    qqnum: int, ban_days: int, start_time: int, ban_tip: str = "自己了干什么心里没点数是吧"
+):
+    ab = BanList(qq_id=qqnum, ban_days=ban_days, start_time=start_time, ban_tip=ban_tip)
+    ab.save()
+
+
+async def delBanList(qqnum: int):
+    BanList.delete().where(BanList.qq_id == str(qqnum)).execute()
+
+
+async def cheakBanList(qqnum: int) -> bool:
+    ret = BanList.select().where(BanList.qq_id == str(qqnum))
+    if ret.exists():
+        return True
+    else:
+        return False
+
+
+async def getBanInfo(qqnum: int) -> BanList:
+    bi = BanList.get(BanList.qq_id == str(qqnum))
+    return bi
+
+
+async def updateBanInfo(qqnum: int, change: dict):
+    ub = BanList.update(change).where(BanList.qq_id == str(qqnum))
+    ub.execute()
+
+
+async def resetBanList():
+    BanList.update(warn_today=False).where(BanList.warn_today).execute()
+    BanList_d = BanList().select()
+    for i in BanList_d:
+        now = time.time()
+        if now - int(i.start_time) >= day_sec * int(i.ban_days):
+            await delBanList(i.qq_id)
     return
