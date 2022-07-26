@@ -28,7 +28,7 @@ clsdic = {
 hitoAlc = Alconna(
     headers=[".hito", "一言"],
     main_args=Args["content;O", str],
-    help_text="获取一条好句子"
+    help_text="获取一条好句子 包括分类:动画、漫画、游戏、文学、原创、网络、其他、影视、诗词、网易云、哲学"
 )
 
 

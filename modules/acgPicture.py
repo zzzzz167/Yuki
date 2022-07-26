@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 import aiohttp
 import asyncio
 from utils.config import init_config
@@ -6,7 +7,7 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Plain, Source, Image
+from graia.ariadne.message.element import Plain, Source, Image, ForwardNode, Forward
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args, Option
@@ -100,8 +101,19 @@ async def randomPicture(
             data = await randomGet(True)
             b_msg = await app.send_group_message(
                 group,
-                MessageChain([Plain(data[0]), Image(data_bytes=data[1])]),
-                quote=source,
+                MessageChain(
+                    Forward(
+                        node_list=[
+                            ForwardNode(
+                                target=member,
+                                time=datetime.now(),
+                                message=MessageChain(
+                                    Plain(data[0]), Image(data_bytes=data[1])
+                                ),
+                            )
+                        ]
+                    )
+                ),
             )
             await asyncio.sleep(30)
             await app.recall_message(b_msg)
@@ -194,13 +206,20 @@ async def searchPicture(
             s_msg = await app.send_group_message(
                 group,
                 MessageChain(
-                    [
-                        Plain(f"你要的关于{contents}的色图来啦\n"),
-                        Plain(data[0]),
-                        Image(data_bytes=data[1]),
-                    ]
+                    Forward(
+                        node_list=[
+                            ForwardNode(
+                                target=member,
+                                time=datetime.now(),
+                                message=MessageChain(
+                                    Plain(f"你要的关于{contents}的色图来啦\n"),
+                                    Plain(data[0]),
+                                    Image(data_bytes=data[1]),
+                                ),
+                            )
+                        ]
+                    )
                 ),
-                quote=source,
             )
             if level == "r18":
                 await asyncio.sleep(30)
