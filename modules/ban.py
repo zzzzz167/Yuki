@@ -30,7 +30,7 @@ inc = InterruptControl(bcc)
 config = init_config()
 
 
-@channel.use(SchedulerSchema(crontabify("30 12 * * *")))
+@channel.use(SchedulerSchema(crontabify("0 1 * * *")))
 async def rest():
     await resetBanList()
     logger.info("黑名单重置成功")
