@@ -43,18 +43,16 @@ async def fabing(app: Ariadne, member: Member, group: Group, result: AlconnaProp
             target = content
         else:
             return
+
+        if len(target) >= 25:
+            await app.send_group_message(group, MessageChain("字数太长啦,想整活?门都没有,封禁了"))
+            await addBanList(member.id, 2, time.time(), "发送超长信息")
+            return
+        elif len(target) >= 15:
+            await app.send_group_message(group, MessageChain("字数太长啦,谁名字这么长呢"))
+            return
     else:
         target = member.name
-    if len(target) >= 25:
-        await app.send_group_message(
-            group, MessageChain("字数太长啦,想整活?门都没有,封禁了")
-        )
-        await addBanList(member.id, 2, time.time(), "发送超长信息")
-    elif len(target) >= 15:
-        await app.send_group_message(
-            group, MessageChain("字数太长啦,谁名字这么长呢")
-        )
-    else:
-        await app.send_group_message(
-            group, MessageChain(random.choice(TEMPLATES).format(target=target))
-        )
+    await app.send_group_message(
+        group, MessageChain(random.choice(TEMPLATES).format(target=target))
+    )

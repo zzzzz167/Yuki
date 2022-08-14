@@ -27,7 +27,6 @@ async def getMoyuMsg() -> str:
     today = datetime.datetime.now()
     holidays = [
         ["周末", retWeekend()],
-        ["test", "2022-1-23"],
         ["清明节", "2022-04-05"],
         ["劳动节", "2022-05-01"],
         ["端午节", "2022-06-03"],
