@@ -79,7 +79,7 @@ async def searchGet(tag: str, level: str = None):
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[
-            AlconnaDispatcher(alconna=randomPictureAlc, help_flag="reply")
+            AlconnaDispatcher(randomPictureAlc, send_flag="reply")
         ],
         decorators=[cheakAcgpicture(), cheakBan()],
     )
@@ -148,7 +148,7 @@ async def randomPicture(
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[
-            AlconnaDispatcher(alconna=searchPictureAlc, help_flag="reply")
+            AlconnaDispatcher(searchPictureAlc, send_flag="reply")
         ],
         decorators=[cheakAcgpicture(), cheakBan()],
     )

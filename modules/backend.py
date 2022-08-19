@@ -7,13 +7,14 @@ from graia.ariadne.message.parser.twilight import (
     RegexResult,
     ParamMatch,
     WildcardMatch,
-    SpacePolicy
+    SpacePolicy,
 )
 from graia.saya import Channel
 from prompt_toolkit.styles import Style
 from utils.database.db import reset_sign, resetBanList, delBanList, addBanList
 from loguru import logger
 import time
+
 
 channel = Channel.current()
 
@@ -81,5 +82,10 @@ async def Ban(console: Console, id: RegexResult, days: RegexResult, tip: RegexRe
         if str(tip.result) == "":
             await addBanList(int(str(id.result)), int(str(days.result)), time.time())
         else:
-            await addBanList(int(str(id.result)), int(str(days.result)), time.time(), ban_tip=str(tip.result))
+            await addBanList(
+                int(str(id.result)),
+                int(str(days.result)),
+                time.time(),
+                ban_tip=str(tip.result),
+            )
         logger.info(f"成功封禁{str(id.result)} {str(days.result)}天,封禁信息:{str(tip.result)} ")

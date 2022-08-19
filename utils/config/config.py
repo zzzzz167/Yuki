@@ -20,3 +20,7 @@ class Permission(BaseModel):
 
 class Debug(BaseModel):
     level: str
+
+
+class Plugins(BaseModel):
+    archiveTalk: dict

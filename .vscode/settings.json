@@ -7,8 +7,8 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "name": "test",
-            "database": "./database/test.db"
+            "name": "botDatabase",
+            "database": "./database/newbot.db"
         }
     ],
     "sqltools.useNodeRuntime": true,

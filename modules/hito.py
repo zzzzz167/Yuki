@@ -35,7 +35,7 @@ hitoAlc = Alconna(
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(alconna=hitoAlc, help_flag="reply")],
+        inline_dispatchers=[AlconnaDispatcher(hitoAlc, send_flag="reply")],
         decorators=[cheakBan()],
     )
 )

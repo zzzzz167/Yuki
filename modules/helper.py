@@ -20,7 +20,7 @@ manager = CommandManager()
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(alconna=helperAlc)],
+        inline_dispatchers=[AlconnaDispatcher(helperAlc)],
         decorators=[cheakBan()],
     ),
 )

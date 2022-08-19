@@ -60,7 +60,7 @@ async def sign(app: Ariadne, group: Group, member: Member):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(alconna=signAlc, help_flag='reply')],
+        inline_dispatchers=[AlconnaDispatcher(signAlc, send_flag='reply')],
         decorators=[cheakBan()]
     )
 )

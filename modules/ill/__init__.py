@@ -29,7 +29,7 @@ ill = Alconna(
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(alconna=ill, help_flag="reply")],
+        inline_dispatchers=[AlconnaDispatcher(ill, send_flag="reply")],
         decorators=[cheakBan()],
     )
 )
