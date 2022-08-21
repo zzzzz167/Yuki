@@ -17,6 +17,7 @@ from utils.database.db import updataGroup, getUser, GroupList, User
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name('二次元图片')
 
 levelToSan: dict = {"r12": 2, "r16": 4, "r18": 6}
 randomPictureAlc = Alconna(

@@ -12,6 +12,8 @@ from utils.hitokoto import getJsonHitokoto
 
 
 channel = Channel.current()
+channel.name('一言')
+
 clsdic = {
     "动画": "a",
     "漫画": "b",

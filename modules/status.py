@@ -11,6 +11,7 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 
 channel = Channel.current()
 config = init_config()
+channel.name('运行状态检查')
 
 
 async def get_sys_status_sync() -> dict:

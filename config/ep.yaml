@@ -9,8 +9,13 @@ bot:
 Permission:
   Master: 12345678
   DefaultAcceptInvite: true
+  Admin: []
   favor: 40
   cd: 30
 
 Debug:
   level: Info
+
+Plugins:
+  archiveTalk:
+    saveBinary: false

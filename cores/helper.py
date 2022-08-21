@@ -13,6 +13,8 @@ from utils.control import cheakBan
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name('帮助')
+
 helperAlc = Alconna(headers=[".help", ".帮助"], help_text="帮助文档")
 manager = CommandManager()
 

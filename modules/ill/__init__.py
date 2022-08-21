@@ -15,6 +15,7 @@ from utils.database.db import addBanList
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name('发病语句生成')
 
 with open("./source/ill/data.json", "r", encoding="UTF-8") as f:
     TEMPLATES = json.loads(f.read())["data"]

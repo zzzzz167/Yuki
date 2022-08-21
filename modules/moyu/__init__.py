@@ -11,6 +11,7 @@ from utils.database.db import GroupList, getGroupSetting
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name('摸鱼提醒')
 
 
 @channel.use(SchedulerSchema(crontabify("45 9 * * *")))

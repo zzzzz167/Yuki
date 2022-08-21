@@ -44,9 +44,22 @@ app = Ariadne(
     config(account=bot_config.bot.account, verify_key=bot_config.mirai.verify_key),
 )
 
-ignore = ["__init__.py", "__pycache__"]
+ignore = ["__init__.py", "__pycache__", "sayaManage.py"]
 
 with saya.module_context():
+    for core_module in os.listdir("cores"):
+        if core_module in ignore:
+            continue
+        try:
+            if os.path.isdir(core_module):
+                saya.require(f"cores.{core_module}")
+            else:
+                saya.require(f"cores.{core_module.split('.')[0]}")
+        except ModuleNotFoundError:
+            pass
+
+    logger.info("core模块加载完成")
+
     for module in os.listdir("modules"):
         if module in ignore:
             continue

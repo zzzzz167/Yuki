@@ -12,6 +12,7 @@ from utils.database.db import getGroupSetting, GroupList
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name('早晚安')
 
 
 async def getNews():
