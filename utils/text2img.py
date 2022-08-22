@@ -1,5 +1,4 @@
 import os
-import codecs
 import imgkit
 import hashlib
 import markdown
@@ -85,19 +84,20 @@ def markdownToImg(mdText: str, cssPath: str, width: int = 720) -> str:
 def templateToImg(templateName: str, templateOptions: dict, width: int = 720) -> str:
     options = {"quiet": "", "encoding": "utf-8", "width": str(width), "enable-local-file-access": ""}
     template = env.get_template(templateName)
-    htmlCache = CACHEPATH + "html/"
     imgCache = CACHEPATH + "img/"
-    if not os.path.exists(htmlCache):
-        os.mkdir(htmlCache)
+    templateOptions['path'] = os.getcwd()
+
     if not os.path.exists(imgCache):
         os.mkdir(imgCache)
 
     out = template.render(**templateOptions)
     templateMD5 = hashlib.md5(out.encode('utf-8')).hexdigest()
-    htmlSavePath = htmlCache + templateMD5 + ".html"
-    htmlFile = codecs.open(htmlSavePath, mode='w', encoding='utf-8')
-    htmlFile.write(out)
-    htmlFile.close()
+
     imgSaveName = imgCache + templateMD5 + ".jpg"
-    imgkit.from_file(htmlSavePath, imgSaveName, options=options)
+
+    if os.path.exists(imgSaveName):
+        logger.info(f"Img-hash hit in {imgSaveName}")
+        return imgSaveName
+
+    imgkit.from_string(out, imgSaveName, options=options)
     return imgSaveName
