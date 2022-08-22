@@ -1,11 +1,24 @@
 import os
+import codecs
 import imgkit
 import hashlib
+import markdown
 from loguru import logger
+from jinja2 import Environment, FileSystemLoader
+from graia.ariadne.util.async_exec import io_bound
 
-options = {"quiet": "", "encoding": "utf-8"}
+exts = [
+    "markdown.extensions.extra",
+    "markdown.extensions.codehilite",
+    "markdown.extensions.tables",
+    "markdown.extensions.toc",
+]
+CACHEPATH = "./cache/"
+TEMPLATEPATH = './source/htmlTemplate/'
+env = Environment(loader=FileSystemLoader(TEMPLATEPATH))
 
 
+@io_bound
 def textToImg(text: str, force: bool = False, width: int = 512) -> str:
     """
     非常暴力的图转文 -> 返回生成文件地址
@@ -14,12 +27,12 @@ def textToImg(text: str, force: bool = False, width: int = 512) -> str:
     width: 图片宽度
     """
 
-    path = "./cache/img/"
-    options["width"] = str(width)
+    cachePath = CACHEPATH + 'img/'
+    options = {"quiet": "", "encoding": "utf-8", "width": str(width)}
     sentenceList = text.split("\n")
-    saveName = path + hashlib.md5(text.encode("utf8")).hexdigest() + ".jpg"
-    if not os.path.exists(path):
-        os.mkdir(path)
+    saveName = cachePath + hashlib.md5(text.encode("utf8")).hexdigest() + ".jpg"
+    if not os.path.exists(cachePath):
+        os.mkdir(cachePath)
 
     if os.path.exists(saveName):
         logger.info(f"Img-hash hit in {saveName}")
@@ -48,3 +61,43 @@ def textToImg(text: str, force: bool = False, width: int = 512) -> str:
         options=options,
     )
     return saveName
+
+
+@io_bound
+def markdownToImg(mdText: str, cssPath: str, width: int = 720) -> str:
+    cachePath = CACHEPATH + 'img/'
+    options = {"quiet": "", "encoding": "utf-8", "width": str(width)}
+    saveName = cachePath + hashlib.md5(mdText.encode("utf8")).hexdigest() + ".jpg"
+    if not os.path.exists(cachePath):
+        os.mkdir(cachePath)
+
+    if os.path.exists(saveName):
+        logger.info(f"Img-hash hit in {saveName}")
+        return saveName
+
+    html = markdown.markdown(mdText, extensipns=exts)
+    html = f'<div id="write">{html}</div>'
+    imgkit.from_string(html, saveName, css=cssPath, options=options)
+    return saveName
+
+
+@io_bound
+def templateToImg(templateName: str, templateOptions: dict, width: int = 720) -> str:
+    options = {"quiet": "", "encoding": "utf-8", "width": str(width), "enable-local-file-access": ""}
+    template = env.get_template(templateName)
+    htmlCache = CACHEPATH + "html/"
+    imgCache = CACHEPATH + "img/"
+    if not os.path.exists(htmlCache):
+        os.mkdir(htmlCache)
+    if not os.path.exists(imgCache):
+        os.mkdir(imgCache)
+
+    out = template.render(**templateOptions)
+    templateMD5 = hashlib.md5(out.encode('utf-8')).hexdigest()
+    htmlSavePath = htmlCache + templateMD5 + ".html"
+    htmlFile = codecs.open(htmlSavePath, mode='w', encoding='utf-8')
+    htmlFile.write(out)
+    htmlFile.close()
+    imgSaveName = imgCache + templateMD5 + ".jpg"
+    imgkit.from_file(htmlSavePath, imgSaveName, options=options)
+    return imgSaveName

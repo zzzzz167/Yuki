@@ -98,4 +98,4 @@ async def test():
         h = ''
         for module, channel in saya.channels.items():
             h += f"module: {module} |" + f"name:{channel.meta['name']}\n"
-        textToImg(h)
+        await textToImg(h)
