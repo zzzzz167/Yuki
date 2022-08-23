@@ -44,7 +44,7 @@ app = Ariadne(
     config(account=bot_config.bot.account, verify_key=bot_config.mirai.verify_key),
 )
 
-ignore = ["__init__.py", "__pycache__", "sayaManage.py"]
+ignore = ["__init__.py", "__pycache__"]
 
 with saya.module_context():
     for core_module in os.listdir("cores"):

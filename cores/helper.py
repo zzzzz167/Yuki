@@ -2,18 +2,19 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Plain, Source
+from graia.ariadne.message.element import Image, Source
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.manager import CommandManager
 from utils.control import cheakBan
+from utils.text2img import textToImg
 
 
 saya = Saya.current()
 channel = Channel.current()
-channel.name('帮助')
+channel.name("帮助")
 
 helperAlc = Alconna(headers=[".help", ".帮助"], help_text="帮助文档")
 manager = CommandManager()
@@ -31,10 +32,12 @@ async def groupHelper(app: Ariadne, group: Group, source: Source):
         group,
         MessageChain(
             [
-                Plain(
-                    manager.all_command_help(
-                        header="Yuki使用帮助",
-                        footer="任意命令均可使用 .命令名 --help 查看更详细的帮助。",
+                Image(
+                    path=await textToImg(
+                        manager.all_command_help(
+                            header="Yuki使用帮助",
+                            footer="任意命令均可使用 .命令名 --help 查看更详细的帮助。",
+                        )
                     )
                 )
             ]

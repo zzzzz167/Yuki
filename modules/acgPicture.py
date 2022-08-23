@@ -66,7 +66,7 @@ async def searchGet(tag: str, level: str = None):
         url += f"/get/tags/{tag}?num=1&only=false"
     async with aiohttp.request("GET", url) as resp:
         rd = await resp.json()
-        if rd["code"] == 200:
+        if rd.get("code", 0) == 200:
             data = rd["data"]["imgs"][0]
             msg = f"标题:{data['name']}\n作者:{data['username']}\npid:{data['userid']}\n"
             async with aiohttp.request("GET", data["url"]) as pcrp:

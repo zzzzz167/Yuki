@@ -4,6 +4,7 @@ import hashlib
 import markdown
 from loguru import logger
 from jinja2 import Environment, FileSystemLoader
+from utils.browser import get_new_page
 from graia.ariadne.util.async_exec import io_bound
 
 exts = [
@@ -80,9 +81,7 @@ def markdownToImg(mdText: str, cssPath: str, width: int = 720) -> str:
     return saveName
 
 
-@io_bound
-def templateToImg(templateName: str, templateOptions: dict, width: int = 720) -> str:
-    options = {"quiet": "", "encoding": "utf-8", "width": str(width), "enable-local-file-access": ""}
+async def templateToImg(templateName: str, templateOptions: dict, wait: int = 0, fource: bool = False) -> str:
     template = env.get_template(templateName)
     imgCache = CACHEPATH + "img/"
     templateOptions['path'] = os.getcwd()
@@ -95,9 +94,13 @@ def templateToImg(templateName: str, templateOptions: dict, width: int = 720) ->
 
     imgSaveName = imgCache + templateMD5 + ".jpg"
 
-    if os.path.exists(imgSaveName):
+    if os.path.exists(imgSaveName) and not fource:
         logger.info(f"Img-hash hit in {imgSaveName}")
         return imgSaveName
 
-    imgkit.from_string(out, imgSaveName, options=options)
+    async with get_new_page() as page:
+        await page.goto(f"file://{templateOptions['path']}/source/htmlTemplate/")
+        await page.set_content(out, wait_until="networkidle")
+        await page.wait_for_timeout(wait)
+        await page.screenshot(full_page=True, path=imgSaveName)
     return imgSaveName

@@ -19,6 +19,7 @@ from graia.ariadne.event.mirai import (
 from graia.ariadne.event.lifecycle import ApplicationLaunched
 from graia.broadcast.interrupt.waiter import Waiter
 from graia.broadcast.interrupt import InterruptControl
+from utils.browser import init, get_browser
 
 saya = Saya.current()
 channel = Channel.current()
@@ -115,6 +116,13 @@ async def get_MemberHonorChangeEvent(events: MemberHonorChangeEvent, app: Ariadn
 
 @channel.use(ListenerSchema(listening_events=[ApplicationLaunched]))
 async def init_bot(app: Ariadne):
+    logger.info("启动browser")
+    await init()
+    logger.info("正在获取浏览器版本")
+    browser = await get_browser()
+    page = await browser.new_page()
+    version = await page.evaluate("() => navigator.appVersion")
+    logger.info(f"[浏览器启动完成，当前版本 {version}")
     gpList = await app.get_group_list()
     dataBaseList = await getGroupList()
     count = 0

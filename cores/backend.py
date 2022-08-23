@@ -13,7 +13,6 @@ from graia.saya import Channel, Saya
 from prompt_toolkit.styles import Style
 from utils.database.db import reset_sign, resetBanList, delBanList, addBanList
 from loguru import logger
-from utils.text2img import textToImg
 import time
 
 saya = Saya.current()
@@ -90,12 +89,3 @@ async def Ban(console: Console, id: RegexResult, days: RegexResult, tip: RegexRe
                 ban_tip=str(tip.result),
             )
         logger.info(f"成功封禁{str(id.result)} {str(days.result)}天,封禁信息:{str(tip.result)} ")
-
-
-@channel.use(ConsoleSchema([Twilight.from_command("test")]))
-async def test():
-    with saya.module_context():
-        h = ''
-        for module, channel in saya.channels.items():
-            h += f"module: {module} |" + f"name:{channel.meta['name']}\n"
-        await textToImg(h)
