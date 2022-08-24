@@ -6,7 +6,7 @@ from graia.scheduler.saya.schema import SchedulerSchema
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain
 from .getHolidays import getMoyuMsg
-from utils.database.db import GroupList, getGroupSetting
+from utils.database import getGroupSetting
 
 
 saya = Saya.current()
@@ -19,7 +19,7 @@ async def goodMorning(app: Ariadne):
     logger.info("开始发送摸鱼消息")
     count = 0
     msg = await getMoyuMsg()
-    for i in await getGroupSetting(GroupList.Moyu):
+    for i in await getGroupSetting('moyu'):
         count += 1
         await app.send_group_message(int(i), MessageChain([Plain(msg)]))
     logger.info("共计发送%s个群聊" % count)

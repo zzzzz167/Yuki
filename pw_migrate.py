@@ -1,12 +1,12 @@
-from utils.database import db
+from utils import database
 
 from peewee_migrate import Router
 
-db.db.connect()
+database.db.connect()
 
-router = Router(db.db, ignore='basemodel')
+router = Router(database.db, ignore='basemodel')
 
-router.create(auto=db)
+router.create(auto=database)
 router.run()
 
-db.db.close()
+database.db.close()

@@ -1,8 +1,7 @@
 import time
-from utils.database.db import (
+from utils.database import (
     getGroupSetting,
     getGroup,
-    GroupList,
     cheakBanList,
     getBanInfo,
     updateBanInfo,
@@ -22,6 +21,14 @@ favor = config.permission.favor
 cd = config.permission.cd
 
 
+def groupConfigRequire(configKey: str):
+    async def cheakGroupConfig(group: Group):
+        if str(group.id) not in await getGroupSetting(configKey):
+            raise ExecutionStop
+
+    return Depend(cheakGroupConfig)
+
+
 def cheakAcgpicture():
     async def cheakCanAcgpicture(app: Ariadne, group: Group, source: Source):
         g = await getGroup(group.id)
@@ -32,9 +39,6 @@ def cheakAcgpicture():
                 MessageChain(f"技能冷却中,距离下次使用还有{round(cd - xc, 2)}s"),
                 quote=source,
             )
-            raise ExecutionStop
-        elif str(group.id) not in await getGroupSetting(GroupList.acgPicture):
-            await app.send_group_message(group, MessageChain("抱歉,该群并不允许发色图"))
             raise ExecutionStop
 
     return Depend(cheakCanAcgpicture)

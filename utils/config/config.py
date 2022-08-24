@@ -25,3 +25,7 @@ class Debug(BaseModel):
 
 class Plugins(BaseModel):
     archiveTalk: dict
+
+
+class GroupDefaultPluginSwitch(BaseModel):
+    pluginSwitch: list

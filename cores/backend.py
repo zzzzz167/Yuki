@@ -11,7 +11,7 @@ from graia.ariadne.message.parser.twilight import (
 )
 from graia.saya import Channel, Saya
 from prompt_toolkit.styles import Style
-from utils.database.db import reset_sign, resetBanList, delBanList, addBanList
+from utils.database import reset_sign, resetBanList, delBanList, addBanList
 from loguru import logger
 import time
 

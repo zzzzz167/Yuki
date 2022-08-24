@@ -1,5 +1,5 @@
 import yaml
-from .config import Debug, MiraiApiHttpConfig, BotConfig, Permission, Plugins
+from .config import Debug, MiraiApiHttpConfig, BotConfig, Permission, Plugins, GroupDefaultPluginSwitch
 
 
 def init_config():
@@ -13,6 +13,7 @@ class Config:
     bot: BotConfig
     permission: Permission
     plugins: Plugins
+    groupDef: GroupDefaultPluginSwitch
 
     def __init__(self, config_path: str):
         self.config_path = config_path
@@ -26,3 +27,4 @@ class Config:
         self.permission = Permission(**config_content["Permission"])
         self.debug = Debug(**config_content["Debug"])
         self.plugins = Plugins(**config_content["Plugins"])
+        self.groupDef = GroupDefaultPluginSwitch(**config_content["GroupDefaultPluginSwitch"])

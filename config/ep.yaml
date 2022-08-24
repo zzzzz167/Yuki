@@ -19,3 +19,15 @@ Debug:
 Plugins:
   archiveTalk:
     saveBinary: false
+
+GroupDefaultPluginSwitch:
+  pluginSwitch:
+    - botSwitch: true
+      status: true
+      goodTime: true
+      hito: true
+      randomAcgPic: true
+      searchAcgPic: true
+      sign: true
+      moyu: true
+      ill: true

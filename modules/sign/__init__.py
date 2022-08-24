@@ -1,8 +1,8 @@
 import random
 from loguru import logger
-from utils.control import cheakBan
-from utils.database.db import User
-from utils.database.db import addUser, getAllUser, getUser, updataUser, reset_sign
+from utils.control import cheakBan, groupConfigRequire
+from utils.database import User
+from utils.database import addUser, getAllUser, getUser, updataUser, reset_sign
 from utils.hitokoto import getAppointHitokoto
 from utils.picture import getMaskBg
 from graia.ariadne.app import Ariadne
@@ -62,7 +62,7 @@ async def sign(app: Ariadne, group: Group, member: Member):
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(signAlc, send_flag='reply')],
-        decorators=[cheakBan()]
+        decorators=[cheakBan(), groupConfigRequire('sign')]
     )
 )
 async def signIn(app: Ariadne, group: Group, member: Member):

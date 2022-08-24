@@ -1,8 +1,8 @@
 import asyncio
-
+import json
 from loguru import logger
 from utils.config import init_config
-from utils.database.db import getGroupList, addGroup
+from utils.database import getGroupList, addGroup
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.ariadne.app import Ariadne
@@ -125,13 +125,14 @@ async def init_bot(app: Ariadne):
     logger.info(f"[浏览器启动完成，当前版本 {version}")
     gpList = await app.get_group_list()
     dataBaseList = await getGroupList()
+    groupDefConfig = json.dumps(config.groupDef.pluginSwitch[0], separators=(",", ":"))
     count = 0
     for i in gpList:
         if str(i.id) in dataBaseList:
             pass
         else:
             count += 1
-            await addGroup(i.id, i.name)
+            await addGroup(i.id, i.name, groupDefConfig)
     logger.info("共 %s 个群未进行初始化,现已完成" % (count))
 
 

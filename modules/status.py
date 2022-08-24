@@ -8,7 +8,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
-from utils.control import cheakBan
+from utils.control import cheakBan, groupConfigRequire
 from utils.text2img import textToImg
 
 channel = Channel.current()
@@ -39,7 +39,7 @@ def general_system_status() -> str:
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(statusAlc)],
-        decorators=[cheakBan()],
+        decorators=[cheakBan(), groupConfigRequire('status')],
     ),
 )
 async def groupHelper(app: Ariadne, group: Group, source: Source):

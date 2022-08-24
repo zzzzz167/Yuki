@@ -8,7 +8,7 @@ from graia.scheduler.saya.schema import SchedulerSchema
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Image, Plain
 from utils.hitokoto import getHitokoto
-from utils.database.db import getGroupSetting, GroupList
+from utils.database import getGroupSetting
 
 saya = Saya.current()
 channel = Channel.current()
@@ -34,7 +34,7 @@ async def goodMorning(app: Ariadne):
     hito = await getHitokoto()
     dailyNewsData = await getNews()
     count = 0
-    for i in await getGroupSetting(GroupList.GoodMorning):
+    for i in await getGroupSetting('goodTime'):
         count += 1
         await app.send_group_message(
             int(i),
@@ -49,7 +49,7 @@ async def goodMorning(app: Ariadne):
 async def goodNight(app: Ariadne):
     logger.info("开始发送晚安消息")
     count = 0
-    for i in await getGroupSetting(GroupList.GoodMorning):
+    for i in await getGroupSetting('goodTime'):
         count += 1
         await app.send_group_message(
             int(i),

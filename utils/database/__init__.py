@@ -1,4 +1,5 @@
 import time
+import json
 from utils.config import init_config
 from peewee import (
     SqliteDatabase,
@@ -50,9 +51,7 @@ class GroupList(BaseModel):
 
     group_id = CharField()
     group_name = CharField()
-    GoodMorning = BooleanField(default=True)
-    Moyu = BooleanField(default=True)
-    acgPicture = BooleanField(default=True)
+    config = CharField()
     acgPictureUse = BigIntegerField(default=0)
 
 
@@ -112,16 +111,23 @@ async def getGroupList() -> list:
     return GroupList_s
 
 
-async def addGroup(id, name):
-    ag = GroupList(group_id=id, group_name=name)
+async def addGroup(id, name, config):
+    ag = GroupList(group_id=id, group_name=name, config=config)
     ag.save()
 
 
-async def getGroupSetting(set: BooleanField) -> list:
-    gs = GroupList().select().where(set == 1)
+# TODO 群组设置返回更新
+async def getGroupSetting(set: str) -> list:
+    gs = GroupList().select()
     gs_r = []
     for j in gs:
-        gs_r.append(j.group_id)
+        groupConfig = json.loads(j.config)
+        if set not in groupConfig.keys():
+            continue
+
+        if groupConfig[set]:
+            gs_r.append(j.group_id)
+
     return gs_r
 
 

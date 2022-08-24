@@ -12,8 +12,8 @@ from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args, Option
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
-from utils.control import cheakAcgpicture, cheakBan
-from utils.database.db import updataGroup, getUser, GroupList, User
+from utils.control import cheakAcgpicture, cheakBan, groupConfigRequire
+from utils.database import updataGroup, getUser, GroupList, User
 
 saya = Saya.current()
 channel = Channel.current()
@@ -82,7 +82,7 @@ async def searchGet(tag: str, level: str = None):
         inline_dispatchers=[
             AlconnaDispatcher(randomPictureAlc, send_flag="reply")
         ],
-        decorators=[cheakAcgpicture(), cheakBan()],
+        decorators=[cheakBan(), groupConfigRequire('randomAcgPic'), cheakAcgpicture()],
     )
 )
 async def randomPicture(
@@ -151,7 +151,7 @@ async def randomPicture(
         inline_dispatchers=[
             AlconnaDispatcher(searchPictureAlc, send_flag="reply")
         ],
-        decorators=[cheakAcgpicture(), cheakBan()],
+        decorators=[cheakBan(), groupConfigRequire('searchAcgPic'), cheakAcgpicture()],
     )
 )
 async def searchPicture(

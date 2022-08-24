@@ -21,7 +21,7 @@ from graia.saya import Saya, Channel
 from graia.scheduler.saya.schema import SchedulerSchema
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.scheduler.timers import crontabify
-from utils.database.db import cheakBanList, delBanList, resetBanList, addBanList
+from utils.database import cheakBanList, delBanList, resetBanList, addBanList
 
 saya = Saya.current()
 channel = Channel.current()

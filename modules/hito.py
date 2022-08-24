@@ -7,7 +7,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
-from utils.control import cheakBan
+from utils.control import cheakBan, groupConfigRequire
 from utils.hitokoto import getJsonHitokoto
 
 
@@ -38,7 +38,7 @@ hitoAlc = Alconna(
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(hitoAlc, send_flag="reply")],
-        decorators=[cheakBan()],
+        decorators=[cheakBan(), groupConfigRequire('hito')],
     )
 )
 async def groupHelper(

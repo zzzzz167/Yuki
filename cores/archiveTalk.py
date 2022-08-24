@@ -3,7 +3,7 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.model import Group, Member, Friend
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from utils.database.db import addGroupTalk, addFriendTalk
+from utils.database import addGroupTalk, addFriendTalk
 from utils.config import init_config
 
 saya = Saya.current()
