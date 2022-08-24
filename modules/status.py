@@ -1,48 +1,50 @@
 import psutil
-from utils.config import init_config
 from graia.ariadne.app import Ariadne
-from graia.ariadne.event.message import FriendMessage
+from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.model import Group
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Plain
-from graia.ariadne.message.parser.twilight import Twilight, FullMatch
-from graia.ariadne.model import Friend
+from graia.ariadne.message.element import Image, Source
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from arclet.alconna import Alconna
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
+from utils.control import cheakBan
+from utils.text2img import textToImg
 
 channel = Channel.current()
-config = init_config()
-channel.name('运行状态检查')
+channel.name("运行状态检查")
+
+statusAlc = Alconna(headers=[".status"], help_text="运行状态检查")
 
 
-async def get_sys_status_sync() -> dict:
-    net = psutil.net_io_counters()
-    net_sent = net.bytes_sent / 1024 / 1024
-    net_recv = net.bytes_recv / 1024 / 1024
-    v_mem = psutil.virtual_memory()
-    s_mem = psutil.swap_memory()
-    cpu_percent = str(psutil.cpu_percent(0))
-    cpu_tem = str(psutil.sensors_temperatures()["cpu_thermal"][0].current)
-    v_mem_percent = str(v_mem.percent)
-    s_mem_percent = str(s_mem.percent)
-    return {
-        "当前CPU占用": cpu_percent,
-        "当前CPU温度": cpu_tem,
-        "实体内存占用": v_mem_percent,
-        "交换内存占用": s_mem_percent,
-        "网络发包": net_sent,
-        "网络收包": net_recv,
-    }
+def general_system_status() -> str:
+    return f"""
+    系统状态
+    内存：{psutil.virtual_memory().percent}%
+    CPU: {psutil.cpu_percent()}%
+    磁盘：{psutil.disk_usage('/').percent}%
+    开机时间：{psutil.boot_time()}
+    磁盘余空间：{psutil.disk_usage('/').free/1024/1024/1024}GB
+    磁盘总空间：{psutil.disk_usage('/').total/1024/1024/1024}GB
+    内存剩余空间：{psutil.virtual_memory().free/1024/1024/1024}GB
+    内存总空间：{psutil.virtual_memory().total/1024/1024/1024}GB
+    NetIO: {psutil.net_io_counters()}
+    DiskIO: {psutil.disk_io_counters()}
+    TCP连接数: {len(psutil.net_connections(kind='tcp'))}
+    UDP连接数: {len(psutil.net_connections(kind='udp'))}
+    """
 
 
 @channel.use(
     ListenerSchema(
-        listening_events=[FriendMessage],
-        inline_dispatchers=[Twilight(FullMatch(".status"))],
-    )
+        listening_events=[GroupMessage],
+        inline_dispatchers=[AlconnaDispatcher(statusAlc)],
+        decorators=[cheakBan()],
+    ),
 )
-async def status(app: Ariadne, friend: Friend):
-    if friend.id == config.permission.Master:
-        await app.send_friend_message(
-            friend,
-            MessageChain(Plain("目前已知情报为:\n" + str(await get_sys_status_sync()))),
-        )
+async def groupHelper(app: Ariadne, group: Group, source: Source):
+    await app.send_group_message(
+        group,
+        MessageChain([Image(path=await textToImg(general_system_status()))]),
+        quote=source,
+    )
