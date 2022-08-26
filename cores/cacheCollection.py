@@ -10,10 +10,10 @@ channel = Channel.current()
 
 @channel.use(SchedulerSchema(crontabify("0 0 */2 * *")))
 async def cacheCollection():
+    logger.info("进行一个缓存的清")
     cachePath = Path('./cache')
     for path in cachePath.iterdir():
         if 'log' not in str(path):
-            print(path)
             try:
                 shutil.rmtree(path)
             except OSError as e:

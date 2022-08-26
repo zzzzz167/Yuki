@@ -22,7 +22,7 @@ Plugins:
 
 GroupDefaultPluginSwitch:
   pluginSwitch:
-    - botSwitch: true
+    - power: true
       status: true
       goodTime: true
       hito: true

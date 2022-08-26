@@ -39,7 +39,7 @@ def general_system_status() -> str:
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(statusAlc)],
-        decorators=[cheakBan(), groupConfigRequire('status')],
+        decorators=[cheakBan(), groupConfigRequire("status")],
     ),
 )
 async def groupHelper(app: Ariadne, group: Group, source: Source):

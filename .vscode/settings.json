@@ -14,5 +14,5 @@
     "sqltools.useNodeRuntime": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": "active",
-    "todo-tree.tree.scanMode": "current file"
+    "todo-tree.tree.scanMode": "workspace"
 }

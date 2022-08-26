@@ -116,7 +116,6 @@ async def addGroup(id, name, config):
     ag.save()
 
 
-# TODO 群组设置返回更新
 async def getGroupSetting(set: str) -> list:
     gs = GroupList().select()
     gs_r = []
@@ -134,6 +133,14 @@ async def getGroupSetting(set: str) -> list:
 async def updataGroup(groupnum: int, change: dict):
     gs = GroupList.update(change).where(GroupList.group_id == str(groupnum))
     gs.execute()
+
+
+async def changeGroupSet(groupnum: int, configKey: str, switch: bool):
+    group = await getGroup(groupnum)
+    oldConfig = json.loads(group.config)
+    oldConfig.update({configKey: switch})
+    newConfig = json.dumps(oldConfig)
+    await updataGroup(groupnum, {GroupList.config: newConfig})
 
 
 async def getGroup(groupnum: int) -> GroupList:

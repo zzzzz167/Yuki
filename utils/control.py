@@ -23,6 +23,8 @@ cd = config.permission.cd
 
 def groupConfigRequire(configKey: str):
     async def cheakGroupConfig(group: Group):
+        if str(group.id) not in await getGroupSetting("power"):
+            raise ExecutionStop
         if str(group.id) not in await getGroupSetting(configKey):
             raise ExecutionStop
 

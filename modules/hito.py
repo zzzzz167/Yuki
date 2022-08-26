@@ -12,7 +12,7 @@ from utils.hitokoto import getJsonHitokoto
 
 
 channel = Channel.current()
-channel.name('一言')
+channel.name("一言")
 
 clsdic = {
     "动画": "a",
@@ -28,9 +28,9 @@ clsdic = {
     "哲学": "k",
 }
 hitoAlc = Alconna(
-    headers=[".hito", "一言"],
+    headers=[".hito", ".一言"],
     main_args=Args["content;O", str],
-    help_text="获取一条好句子 包括分类:动画、漫画、游戏、文学、原创、网络、其他、影视、诗词、网易云、哲学"
+    help_text="获取一条好句子 包括分类:动画、漫画、游戏、文学、原创、网络、其他、影视、诗词、网易云、哲学",
 )
 
 
@@ -38,7 +38,7 @@ hitoAlc = Alconna(
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(hitoAlc, send_flag="reply")],
-        decorators=[cheakBan(), groupConfigRequire('hito')],
+        decorators=[cheakBan(), groupConfigRequire("hito")],
     )
 )
 async def groupHelper(

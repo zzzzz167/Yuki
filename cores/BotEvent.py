@@ -2,7 +2,7 @@ import asyncio
 import json
 from loguru import logger
 from utils.config import init_config
-from utils.database import getGroupList, addGroup
+from utils.database import getGroupList, addGroup, updataGroup, GroupList
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.ariadne.app import Ariadne
@@ -123,9 +123,34 @@ async def init_bot(app: Ariadne):
     page = await browser.new_page()
     version = await page.evaluate("() => navigator.appVersion")
     logger.info(f"[浏览器启动完成，当前版本 {version}")
+
     gpList = await app.get_group_list()
     dataBaseList = await getGroupList()
     groupDefConfig = json.dumps(config.groupDef.pluginSwitch[0], separators=(",", ":"))
+    logger.info("插件配置检查")
+    gs = GroupList().select()
+    for i in gs:
+        groupConfig = json.loads(i.config)
+        if not groupConfig:
+            await updataGroup(i.group_id, {GroupList.config: groupDefConfig})
+            logger.info(f"为{i.group_id}({i.group_name})重置配置完成")
+            groupConfig = config.groupDef.pluginSwitch[0]
+
+        differentKeyList = []
+        for s in groupConfig.copy().keys():
+            if s not in config.groupDef.pluginSwitch[0].keys():
+                differentKeyList.append(s)
+                groupConfig.pop(s)
+        if len(differentKeyList) != 0:
+            logger.info(
+                f"{i.group_name}({i.group_id})发现未知配置键{' '.join(differentKeyList)}已删除"
+            )
+        newConfig = config.groupDef.pluginSwitch[0].copy()
+        newConfig.update(groupConfig)
+        write = json.dumps(newConfig, separators=(",", ":"))
+        await updataGroup(i.group_id, {GroupList.config: write})
+    logger.info("检查完成,配置已同步")
+
     count = 0
     for i in gpList:
         if str(i.id) in dataBaseList:
