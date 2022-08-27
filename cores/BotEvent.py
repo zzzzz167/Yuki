@@ -163,7 +163,8 @@ async def init_bot(app: Ariadne):
 
 @channel.use(ListenerSchema(listening_events=[BotJoinGroupEvent]))
 async def get_BotJoinGroup(app: Ariadne, joingroup: BotJoinGroupEvent):
-    await addGroup(joingroup.group.id, joingroup.group.name)
+    groupDefConfig = json.dumps(config.groupDef.pluginSwitch[0], separators=(",", ":"))
+    await addGroup(joingroup.group.id, joingroup.group.name, groupDefConfig)
     logger.info("为群组%s进行初始化" % (joingroup.group.name))
     await app.send_group_message(
         joingroup.group.id, MessageChain([Plain("我是Yuki,很高兴见到大家.\n发送.help可以查看功能列表")])

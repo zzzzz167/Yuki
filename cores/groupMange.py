@@ -28,6 +28,7 @@ pluginIntroduction = {
     "moyu": "摸鱼消息发送",
     "ill": "发病句子生成",
 }
+ignoreKey = ["keyReplayList"]
 
 groupMange = Alconna(
     headers=[".bot"],
@@ -42,6 +43,12 @@ groupMange = Alconna(
 @decorate(Permission.require(Permission.GROUP_ADMIN), match_path("config"))
 async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arpamar):
     pluginName = res.options["config"]["name"]
+    if pluginName in ignoreKey:
+        await app.send_group_message(
+            group, MessageChain(f"{pluginName}不可进行操作, 可使用.bot list查看插件名称"), quote=source
+        )
+        return
+
     if pluginName not in configKey:
         await app.send_group_message(
             group, MessageChain(f"{pluginName}不存在, 可使用.bot list查看插件名称"), quote=source
@@ -66,7 +73,8 @@ async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arp
 async def groupPluginsList(app: Ariadne, group: Group, source: Source):
     msg = "tip:以下均为 插件名称:插件简介 的格式,在设置时请用插件名称"
     for i in configKey:
-        msg += i + " : " + pluginIntroduction.get(i, "没有简介捏") + "\n"
+        if i not in ignoreKey:
+            msg += i + " : " + pluginIntroduction.get(i, "没有简介捏") + "\n"
     await app.send_group_message(
         group,
         MessageChain(Image(path=await textToImg(msg))),

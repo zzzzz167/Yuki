@@ -121,6 +121,9 @@ async def getGroupSetting(set: str) -> list:
     gs_r = []
     for j in gs:
         groupConfig = json.loads(j.config)
+        if not groupConfig['power']:
+            continue
+
         if set not in groupConfig.keys():
             continue
 

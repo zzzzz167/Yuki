@@ -31,3 +31,5 @@ GroupDefaultPluginSwitch:
       sign: true
       moyu: true
       ill: true
+      keyReplaySwitch: true
+      keyReplayList: []

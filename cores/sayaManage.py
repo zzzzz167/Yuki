@@ -1,15 +1,14 @@
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage
-from graia.ariadne.model import Group, Member
+from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import At, Image, Source, Plain
+from graia.ariadne.message.element import Source, Plain
 from graia.saya import Saya, Channel
 from arclet.alconna import Alconna, Option, Args
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, Arpamar
 from arclet.alconna.graia import match_path
 from utils.control import Permission
-from utils.text2img import templateToImg
 from loguru import logger
 
 saya = Saya.current()
@@ -137,25 +136,4 @@ async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arpam
             Plain(f"插件{moduleName}已卸载"),
         ),
         quote=source,
-    )
-
-
-@listen(GroupMessage)
-@dispatch(AlconnaDispatcher(manageAlc))
-@decorate(Permission.require(), match_path("list"))
-async def sayaList(
-    app: Ariadne,
-    group: Group,
-    member: Member,
-):
-    await app.send_group_message(
-        group,
-        MessageChain(
-            At(member.id),
-            Image(
-                path=await templateToImg(
-                    "modulesList.html", {"text": "123"}, fource=True
-                )
-            ),
-        ),
     )

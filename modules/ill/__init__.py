@@ -10,7 +10,7 @@ from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args, Empty
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
-from utils.control import cheakBan, getGroupSetting
+from utils.control import cheakBan, groupConfigRequire
 from utils.database import addBanList
 
 saya = Saya.current()
@@ -31,7 +31,7 @@ ill = Alconna(
     ListenerSchema(
         listening_events=[GroupMessage],
         inline_dispatchers=[AlconnaDispatcher(ill, send_flag="reply")],
-        decorators=[cheakBan(), getGroupSetting("ill")],
+        decorators=[cheakBan(), groupConfigRequire("ill")],
     )
 )
 async def fabing(app: Ariadne, member: Member, group: Group, result: AlconnaProperty):
