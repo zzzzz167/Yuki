@@ -1,5 +1,8 @@
+import os
+import pickle
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.event.lifecycle import ApplicationLaunched
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.ariadne.message.chain import MessageChain
@@ -113,6 +116,12 @@ async def installModule(app: Ariadne, group: Group, source: Source, res: Arpamar
                 ),
                 quote=source,
             )
+        else:
+            with open("./unMountPlugin.pickle", "rb") as f:
+                unMountPlugin = pickle.load(f)
+            unMountPlugin.remove(f"{moduleName}")
+            with open("./unMountPlugin.pickle", "wb") as f:
+                pickle.dump(unMountPlugin, f)
 
 
 @listen(GroupMessage)
@@ -137,3 +146,23 @@ async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arpam
         ),
         quote=source,
     )
+    with open("./unMountPlugin.pickle", "rb") as f:
+        unMountPlugin = pickle.load(f)
+    unMountPlugin.append(f"{moduleName}")
+    with open("./unMountPlugin.pickle", "wb") as f:
+        pickle.dump(unMountPlugin, f)
+
+
+@listen(ApplicationLaunched)
+async def initSaya():
+    if not os.path.exists("./unMountPlugin.pickle"):
+        logger.info("未找到插件挂载配置文件,正在生成")
+        with open("./unMountPlugin.pickle", "wb") as f:
+            pickle.dump([], f)
+
+    with open("./unMountPlugin.pickle", "rb") as f:
+        unMountPlugin = pickle.load(f)
+        with saya.module_context():
+            for i in unMountPlugin:
+                saya.uninstall_channel(saya.channels.get(i))
+                logger.info(f"插件{i}已全局禁用")

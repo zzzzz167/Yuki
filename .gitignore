@@ -138,3 +138,4 @@ migrations/003_auto.py
 cp_modules
 test/
 newbot.db
+unMountPlugin.pickle
