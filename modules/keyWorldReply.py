@@ -30,21 +30,24 @@ keyAlc = Alconna(
             "add",
             args=Args["key", str],
             options=[
-                Option("probability", Args["prob", float, 0.6], alias=["-P"]),
+                Option("probability", Args["prob", float, 0.6], alias=["-P"], help_text="设置回复概率,区间为0~1"),
                 Option(
                     "mode",
                     Args["modele", ["completely", "part"], "completely"],
                     alias=["-M"],
+                    help_text="设置回复模式「completely」完全匹配消息, 「part」消息中包含关键字"
                 ),
             ],
+            help_text="添加一个新的关键词回复"
         ),
-        Subcommand("remove", args=Args["key", str]),
+        Subcommand("remove", args=Args["key", str], help_text="删除一个已知的关键词回复"),
     ],
+    help_text="关键词回复"
 )
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(keyAlc, send_flag="reply"))
+@dispatch(AlconnaDispatcher(keyAlc, send_flag="post"))
 @decorate(
     groupConfigRequire("keyReplaySwitch"),
     Permission.require(Permission.GROUP_ADMIN),
@@ -117,7 +120,7 @@ async def addKeyReply(
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(keyAlc, send_flag="reply"))
+@dispatch(AlconnaDispatcher(keyAlc, send_flag="post"))
 @decorate(
     groupConfigRequire("keyReplaySwitch"),
     Permission.require(Permission.GROUP_ADMIN),

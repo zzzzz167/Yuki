@@ -32,14 +32,14 @@ ignoreKey = ["keyReplayList"]
 
 groupMange = Alconna(
     headers=[".bot"],
-    options=[Option("config", Args["name", str]["switch", switch]), Option("list")],
+    options=[Option("config", Args["name", str]["switch", switch], help_text="设置插件开关,Eg: .bot config 「插件名」 「on|off」"), Option("list", help_text="得到所有配置键")],
     help_text="群组bot管理",
     namespace="core",
 )
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(groupMange))
+@dispatch(AlconnaDispatcher(groupMange, send_flag="post"))
 @decorate(Permission.require(Permission.GROUP_ADMIN), match_path("config"))
 async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arpamar):
     pluginName = res.options["config"]["name"]
@@ -68,7 +68,7 @@ async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arp
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(groupMange))
+@dispatch(AlconnaDispatcher(groupMange, send_flag="post"))
 @decorate(Permission.require(Permission.GROUP_ADMIN), match_path("list"))
 async def groupPluginsList(app: Ariadne, group: Group, source: Source):
     msg = "tip:以下均为 插件名称:插件简介 的格式,在设置时请用插件名称"

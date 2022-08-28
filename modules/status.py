@@ -38,7 +38,7 @@ def general_system_status() -> str:
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(statusAlc)],
+        inline_dispatchers=[AlconnaDispatcher(statusAlc, send_flag="reply")],
         decorators=[cheakBan(), groupConfigRequire("status")],
     ),
 )

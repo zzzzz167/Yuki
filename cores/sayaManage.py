@@ -22,11 +22,10 @@ manageAlc = Alconna(
     headers=["."],
     command="saya",
     options=[
-        Option("list"),
-        Option("reloadAll"),
-        Option("reload", Args["name", str]),
-        Option("install", Args["name", str]),
-        Option("uninstall", Args["name", str]),
+        Option("reloadAll", help_text="重载所有插件"),
+        Option("reload", Args["name", str], help_text="重载制定插件"),
+        Option("install", Args["name", str], help_text="装载制定插件"),
+        Option("uninstall", Args["name", str], help_text="卸载制定插件"),
     ],
     help_text="管理saya插件",
     namespace="core",
@@ -34,7 +33,7 @@ manageAlc = Alconna(
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(manageAlc))
+@dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("reloadAll"))
 async def sayaAllReload(app: Ariadne, group: Group, source: Source):
     with saya.module_context():
@@ -58,7 +57,7 @@ async def sayaAllReload(app: Ariadne, group: Group, source: Source):
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(manageAlc))
+@dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("reload"))
 async def reloadModule(app: Ariadne, group: Group, source: Source, res: Arpamar):
     moduleName = "modules." + res.options["reload"]["name"]
@@ -84,7 +83,7 @@ async def reloadModule(app: Ariadne, group: Group, source: Source, res: Arpamar)
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(manageAlc))
+@dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("install"))
 async def installModule(app: Ariadne, group: Group, source: Source, res: Arpamar):
     moduleName = "modules." + res.options["install"]["name"]
@@ -125,7 +124,7 @@ async def installModule(app: Ariadne, group: Group, source: Source, res: Arpamar
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(manageAlc))
+@dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("uninstall"))
 async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arpamar):
     moduleName = "modules." + res.options["uninstall"]["name"]
