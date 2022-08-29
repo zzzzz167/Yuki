@@ -19,7 +19,11 @@ from utils.control import Permission, cheakBan, groupConfigRequire
 from utils.database import getGroup, updataGroup, GroupList
 
 channel = Channel.current()
-channel.name("群组关键词设置")
+channel.name("关键词回复")
+channel.description("简单的关键词回复, 设置后依照设置模式与概率回复消息")
+channel.meta["switchKey"] = "keyReplaySwitch"
+channel.meta["icon"] = "chat.svg"
+
 inc = create(InterruptControl)
 
 keyAlc = Alconna(

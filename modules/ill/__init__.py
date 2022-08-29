@@ -15,7 +15,10 @@ from utils.database import addBanList
 
 saya = Saya.current()
 channel = Channel.current()
-channel.name('发病语句生成')
+channel.name('发病')
+channel.name("生成发病(发癫)文字, Eg: .发病")
+channel.meta["switchKey"] = "ill"
+channel.meta["icon"] = "fire.svg"
 
 with open("./source/ill/data.json", "r", encoding="UTF-8") as f:
     TEMPLATES = json.loads(f.read())["data"]

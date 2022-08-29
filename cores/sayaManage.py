@@ -16,7 +16,9 @@ from loguru import logger
 
 saya = Saya.current()
 channel = Channel.current()
-channel.name("saya插件管理")
+channel.name("插件管理")
+channel.description("bot插件全局管理, Eg: 「.saya reload ill 」重载发病插件")
+channel.meta["icon"] = "cog.svg"
 
 manageAlc = Alconna(
     headers=["."],

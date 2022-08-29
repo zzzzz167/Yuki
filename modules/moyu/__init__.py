@@ -12,6 +12,9 @@ from utils.database import getGroupSetting
 saya = Saya.current()
 channel = Channel.current()
 channel.name('摸鱼提醒')
+channel.description("定时发送今日摸鱼消息, 主动式插件无法被主动调用")
+channel.meta["switchKey"] = "moyu"
+channel.meta["icon"] = "fish.svg"
 
 
 @channel.use(SchedulerSchema(crontabify("45 9 * * *")))

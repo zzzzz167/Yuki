@@ -12,7 +12,10 @@ from utils.control import cheakBan, groupConfigRequire
 from utils.text2img import textToImg
 
 channel = Channel.current()
-channel.name("运行状态检查")
+channel.name("运行状态")
+channel.description("获取bot当前运行状态, Eg: .status")
+channel.meta["switchKey"] = "status"
+channel.meta["icon"] = "speedometer.svg"
 
 statusAlc = Alconna(headers=[".status"], help_text="运行状态检查")
 

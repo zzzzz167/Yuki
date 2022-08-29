@@ -25,6 +25,9 @@ from utils.database import cheakBanList, delBanList, resetBanList, addBanList
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name("黑名单")
+channel.description("对不爽的人进行一个封")
+
 bcc = saya.broadcast
 inc = InterruptControl(bcc)
 config = init_config()

@@ -13,6 +13,9 @@ from utils.database import getGroupSetting
 saya = Saya.current()
 channel = Channel.current()
 channel.name('早晚安')
+channel.description("早晚安消息, 主动式插件无法被主动调用")
+channel.meta["switchKey"] = "goodTime"
+channel.meta["icon"] = "moon.svg"
 
 
 async def getNews():

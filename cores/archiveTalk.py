@@ -8,6 +8,10 @@ from utils.config import init_config
 
 saya = Saya.current()
 channel = Channel.current()
+channel.name("史官")
+channel.description("收集群友怪话")
+channel.meta["icon"] = "server.svg"
+
 archiveTalkConfig = init_config().plugins.archiveTalk
 
 

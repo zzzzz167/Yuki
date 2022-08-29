@@ -13,6 +13,9 @@ from utils.hitokoto import getJsonHitokoto
 
 channel = Channel.current()
 channel.name("一言")
+channel.description("一条好句子, Eg: .hito")
+channel.meta["switchKey"] = "hito"
+channel.meta["icon"] = "language.svg"
 
 clsdic = {
     "动画": "a",

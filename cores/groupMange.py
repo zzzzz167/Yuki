@@ -14,7 +14,10 @@ from utils.database import changeGroupSet
 from utils.text2img import textToImg
 
 channel = Channel.current()
-channel.name("群组插件设置")
+channel.name("群组插件管理")
+channel.description("群组插件管理, Eg: .bot xxx")
+channel.meta["icon"] = "sync.svg"
+
 configKey = init_config().groupDef.pluginSwitch[0].keys()
 switch = ["on", "off"]
 pluginIntroduction = {

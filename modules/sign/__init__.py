@@ -21,6 +21,10 @@ from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 saya = Saya.current()
 channel = Channel.current()
 channel.name('签到')
+channel.description("每日签到, Eg: .sign")
+channel.meta["switchKey"] = "sign"
+channel.meta["icon"] = "heart.svg"
+
 signAlc = Alconna(".sign", help_text="每日签到")
 
 
