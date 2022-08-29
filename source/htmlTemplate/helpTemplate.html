@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>HelpTemp</title>
+	<link rel="stylesheet" href="{{ path }}/source/css/helpTemplate.css">
+</head>
+
+<body>
+	<div class="main container mx-auto">
+		
+		<div class="grid {% if unable.group|length == 0 and unable.global|length == 0%} grid-cols-2 gap-2 {% else %} grid-cols-3 gap-3 {% endif %} ml-1" style="margin-left: 1rem;margin-bottom: 1rem;">
+			<div class="prose col-span-1 mr-9 ml-1">
+				<h2 class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500 mt-3">
+					帮助菜单
+				</h2>
+				<div class="bot-info bg-base-300 px-5 rounded-[18px] shadow-md shadow-pink-500/40">
+					<h3 class="bot-name pt-2">YUKI</h3>
+					<div class="pb-3">
+						<div class="avatar online float-right -top-9">
+							<div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
+								<img class=" mt-0" src="{{ path }}/source/img/helpTemplate/avatar.jpeg" />
+							</div>
+						</div>
+						YUKI-BOT是一个简单的服务型QQ机器人
+					</div>
+				</div>
+				<div class="plugins-info bg-base-300 px-5 mt-9 rounded-[18px] shadow-md shadow-pink-500/40">
+					<div class="plugins-stat py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-cyan-600 rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/achiveBox.svg" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							共安装 {{cores|length + pluginsEnable|length + unable.group|length + unable.global|length }} 个插件
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							包括自己写的和各处超的
+						</div>
+					</div>
+					<div class="divider my-0">☀︎</div>
+					<div class="plugins-able py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-success rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/faceSmile.svg" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							本群组启用 {{ pluginsEnable|length }} 个插件
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							将以 「亮绿色」标记
+						</div>
+					</div>
+					<div class="divider my-0">☀︎</div>
+					<div class="plugins-unenable py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-error rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/faceFrown.svg" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							本群组禁用 {{ unable.group|length + unable.global|length }} 个插件
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							将以 「亮红色」标记
+						</div>
+					</div>
+					<div class="divider my-0">☀︎</div>
+					<div class="plugins-core py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-accent rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/eyeSlash.svg" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							核心插件安装 {{ cores|length }} 个
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							将以 「亮橙色」标记, 不可禁用
+						</div>
+					</div>
+				</div>
+				<div class="plugins-info mt-9 rounded-[18px] shadow-md shadow-blue-500">
+					<div class="alert alert-info shadow-lg text-sm">
+						<div>
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+								class="stroke-current flex-shrink-0 w-6 h-6">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+							<span>插件使用命令请看各个插件下方注释.<br>详细可用 「.指令名 --help」查看.</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="plugins-info bg-base-300 px-5 mt-9 rounded-[18px] shadow-md shadow-pink-500/40">
+					{% for plugin in pluginsEnable %}
+					<div class="plugins-unenable py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-success rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/{{ plugin.icon }}" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							{{plugin.name}}
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							{{ plugin.description }}
+						</div>
+					</div>
+					{% if loop.last != true %}
+					<div class="divider my-0">☀︎</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+			{% if unable.group|length != 0 or unable.global|length != 0%}
+			<div class="prose col-span-1 mr-9 ml-1">
+				{% if unable.group|length != 0 %}
+				<div class="alert alert-warning shadow-lg mt-[65px] shadow-yellow-200/50">
+					<div>
+						<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+						</svg>
+						<div>
+							<h3 class="font-bold text-gray-700 m-0">群组禁用插件</h3>
+							<div class="text-sm">这些插件已经被安装,但群组未启用,可联系群组管理员调用群组管理模块开启</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="plugins-info bg-base-300 px-5 mt-9 rounded-[18px] shadow-md shadow-pink-500/40">
+					{% for plugin in unable.group %}
+					<div class="plugins-unenable py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-error rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/{{ plugin.icon }}" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							{{plugin.name}}
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							{{ plugin.description }}
+						</div>
+					</div>
+					{% if loop.last != true %}
+					<div class="divider my-0">☀︎</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+				{% endif %}
+
+				{% if unable.global|length != 0 %}
+				<div class="alert alert-warning shadow-lg {% if unable.group|length == 0 %} mt-[65px] {% else %} mt-9 {% endif %} shadow-yellow-200/50">
+					<div>
+						<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+						</svg>
+						<div>
+							<h3 class="font-bold text-gray-700 m-0">全局禁用插件</h3>
+							<div class="text-sm">这些插件被全局禁用, 请联系bot管理员进行开启</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="plugins-info bg-base-300 px-5 mt-9 rounded-[18px] shadow-md shadow-pink-500/40">
+
+					{% for plugin in unable.global %}
+					<div class="plugins-unenable py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-error rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/{{ plugin.icon }}" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							{{plugin.name}}
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							{{ plugin.description }}
+						</div>
+					</div>
+					{% if loop.last != true %}
+					<div class="divider my-0">☀︎</div>
+					{% endif %}
+					{% endfor %}
+
+				</div>
+				{% endif %}
+
+			</div>
+			{% endif %}
+
+			<div class="prose bg col-span-1 mr-9 ml-1">
+				<div class="alert bg-base-300 shadow-lg mt-16 rounded-[18px] shadow-pink-500/40">
+					<div>
+						<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						<div>
+							<h3 class="font-bold m-0">核心组件</h3>
+							<div class="text-sm">这些插件是bot的核心, 不可卸载, 但可以调用</div>
+						</div>
+					</div>
+				</div>
+				<div class="plugins-info bg-base-300 px-5 mt-9 rounded-[18px] shadow-md shadow-pink-500/40">
+
+					{% for plugin in cores %}
+					<div class="plugins-unenable py-4 px-2">
+						<div class="icon p-2 h-10 w-10 bg-accent rounded-lg float-left mt-2 flex">
+							<img src="{{ path }}/source/icon/{{ plugin.icon }}" type="image/svg+xml" class="w-6 h-6 my-0"/>
+						</div>
+						<h3 class="plugin-title m-0 pl-16">
+							{{plugin.name}}
+						</h3>
+						<div class="text m-0 pl-16 text-sm">
+							{{ plugin.description }}
+						</div>
+					</div>
+					{% if loop.last != true %}
+					<div class="divider my-0">☀︎</div>
+					{% endif %}
+					{% endfor %}
+
+				</div>
+				<div class="progect-info mt-9 rounded-[18px] shadow-md shadow-blue-500">
+					<div class="alert alert-info shadow-lg text-sm">
+						<div>
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+								class="stroke-current flex-shrink-0 w-6 h-6">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+							<span>项目仓库: <span class="underline">htpps://www.github.com/zzzzz167/Yuki</span> <br /> 给个star吧求求惹</span>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+</body>
+
+</html>
