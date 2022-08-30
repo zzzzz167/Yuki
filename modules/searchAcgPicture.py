@@ -20,7 +20,7 @@ channel = Channel.current()
 channel.name("acg图片搜索")
 channel.description("简单的tag搜图, Eg: .搜索色图 xxx")
 channel.meta["switchKey"] = "searchAcgPic"
-channel.meta["icon"] = "speedometer.svg"
+channel.meta["icon"] = "pic.svg"
 
 levelToSan: dict = {"r12": 2, "r16": 4, "r18": 6}
 

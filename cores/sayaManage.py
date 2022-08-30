@@ -120,7 +120,9 @@ async def installModule(app: Ariadne, group: Group, source: Source, res: Arpamar
         else:
             with open("./unMountPlugin.pickle", "rb") as f:
                 unMountPlugin = pickle.load(f)
-            unMountPlugin.remove(f"{moduleName}")
+            for i in unMountPlugin.copy():
+                if i["plugin"] == moduleName:
+                    unMountPlugin.remove(i)
             with open("./unMountPlugin.pickle", "wb") as f:
                 pickle.dump(unMountPlugin, f)
 
@@ -139,7 +141,14 @@ async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arpam
             quote=source,
         )
         return
-    saya.uninstall_channel(saya.channels.get(moduleName))
+    beforeUninstallChannel = saya.channels.get(moduleName)
+    uninstallMete = {
+        "plugin": moduleName,
+        "name": beforeUninstallChannel.meta["name"],
+        "description": beforeUninstallChannel.meta["description"],
+        "icon": beforeUninstallChannel.meta["icon"],
+    }
+    saya.uninstall_channel(beforeUninstallChannel)
     await app.send_group_message(
         group,
         MessageChain(
@@ -149,7 +158,7 @@ async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arpam
     )
     with open("./unMountPlugin.pickle", "rb") as f:
         unMountPlugin = pickle.load(f)
-    unMountPlugin.append(f"{moduleName}")
+    unMountPlugin.append(uninstallMete)
     with open("./unMountPlugin.pickle", "wb") as f:
         pickle.dump(unMountPlugin, f)
 
@@ -165,5 +174,5 @@ async def initSaya():
         unMountPlugin = pickle.load(f)
         with saya.module_context():
             for i in unMountPlugin:
-                saya.uninstall_channel(saya.channels.get(i))
+                saya.uninstall_channel(saya.channels.get(i["plugin"]))
                 logger.info(f"插件{i}已全局禁用")

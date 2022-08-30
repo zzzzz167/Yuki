@@ -81,7 +81,7 @@ def markdownToImg(mdText: str, cssPath: str, width: int = 720) -> str:
     return saveName
 
 
-async def templateToImg(templateName: str, templateOptions: dict, wait: int = 0, fource: bool = False) -> str:
+async def templateToImg(templateName: str, templateOptions: dict, wait: int = 0, fource: bool = False, **browserOptin) -> str:
     template = env.get_template(templateName)
     imgCache = CACHEPATH + "img/"
     templateOptions['path'] = os.getcwd()
@@ -98,7 +98,7 @@ async def templateToImg(templateName: str, templateOptions: dict, wait: int = 0,
         logger.info(f"Img-hash hit in {imgSaveName}")
         return imgSaveName
 
-    async with get_new_page() as page:
+    async with get_new_page(**browserOptin) as page:
         await page.goto(f"file://{templateOptions['path']}/source/htmlTemplate/")
         await page.set_content(out, wait_until="networkidle")
         await page.wait_for_timeout(wait)

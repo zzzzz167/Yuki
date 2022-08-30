@@ -16,7 +16,7 @@ from utils.database import addBanList
 saya = Saya.current()
 channel = Channel.current()
 channel.name('发病')
-channel.name("生成发病(发癫)文字, Eg: .发病")
+channel.description("生成发病(发癫)文字, Eg: .发病")
 channel.meta["switchKey"] = "ill"
 channel.meta["icon"] = "fire.svg"
 

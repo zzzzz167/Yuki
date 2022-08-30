@@ -20,7 +20,7 @@ channel = Channel.current()
 channel.name("随机acg图片")
 channel.description("随机获取一张图片, Eg: .setu 「r18」")
 channel.meta["switchKey"] = "randomAcgPic"
-channel.meta["icon"] = "speedometer.svg"
+channel.meta["icon"] = "random.svg"
 
 randomPictureAlc = Alconna(
     headers=[".setu"],

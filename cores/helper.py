@@ -34,9 +34,18 @@ helperAlc = Alconna(headers=[".help", ".帮助"], help_text="帮助文档")
 )
 async def groupHelper(app: Ariadne, group: Group, source: Source):
     tempOpin = {"pluginsEnable": [], "unable": {"group": [], "global": []}, "cores": []}
-    config = json.loads(await getGroup(group.id).config)
+    groupDB = await getGroup(group.id)
+    groupConfig = json.loads(groupDB.config)
     with open("./unMountPlugin.pickle", "rb") as f:
         unMountPlugin = pickle.load(f)
+    for i in unMountPlugin:
+        tempOpin["unable"]["global"].append(
+            {
+                "name": i["name"],
+                "description": i["description"],
+                "icon": i["icon"],
+            }
+        )
     for module, channel in saya.channels.items():
         if "cores." in module:
             if channel.meta["name"]:
@@ -48,15 +57,7 @@ async def groupHelper(app: Ariadne, group: Group, source: Source):
                     }
                 )
         else:
-            if channel.meta["name"] in unMountPlugin:
-                tempOpin["unable"]["global"].append(
-                    {
-                        "name": channel.meta["name"],
-                        "description": channel.meta["description"],
-                        "icon": channel.meta["icon"],
-                    }
-                )
-            elif config.get(channel.meta["switchKey"]):
+            if groupConfig.get(channel.meta["switchKey"]):
                 tempOpin["pluginsEnable"].append(
                     {
                         "name": channel.meta["name"],
@@ -74,8 +75,8 @@ async def groupHelper(app: Ariadne, group: Group, source: Source):
                 )
     await app.send_group_message(
         group,
-        MessageChain([Image(path=await templateToImg("helpTemplate.html", tempOpin))]),
-        quote=source
+        MessageChain([Image(path=await templateToImg("helpTemplate.html", tempOpin, viewport={'width': 1680, 'height': 980}))]),
+        quote=source,
     )
 
 

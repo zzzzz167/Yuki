@@ -27,6 +27,7 @@ saya = Saya.current()
 channel = Channel.current()
 channel.name("黑名单")
 channel.description("对不爽的人进行一个封")
+channel.meta["icon"] = "ban.svg"
 
 bcc = saya.broadcast
 inc = InterruptControl(bcc)
