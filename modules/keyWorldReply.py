@@ -8,7 +8,7 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Source
+from graia.ariadne.message.element import Source, Image
 from graia.saya import Channel
 from graia.broadcast.interrupt.waiter import Waiter
 from graia.broadcast.interrupt import InterruptControl
@@ -17,10 +17,11 @@ from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.graia import match_path, Query
 from utils.control import Permission, cheakBan, groupConfigRequire
 from utils.database import getGroup, updataGroup, GroupList
+from utils.text2img import textToImg
 
 channel = Channel.current()
 channel.name("关键词回复")
-channel.description("简单的关键词回复, 设置后依照设置模式与概率回复消息")
+channel.description("简单的关键词回复, 指令头: .keyReply")
 channel.meta["switchKey"] = "keyReplaySwitch"
 channel.meta["icon"] = "chat.svg"
 
@@ -34,19 +35,25 @@ keyAlc = Alconna(
             "add",
             args=Args["key", str],
             options=[
-                Option("probability", Args["prob", float, 0.6], alias=["-P"], help_text="设置回复概率,区间为0~1"),
+                Option(
+                    "probability",
+                    Args["prob", float, 0.6],
+                    alias=["-P"],
+                    help_text="设置回复概率,区间为0~1",
+                ),
                 Option(
                     "mode",
                     Args["modele", ["completely", "part"], "completely"],
                     alias=["-M"],
-                    help_text="设置回复模式「completely」完全匹配消息, 「part」消息中包含关键字"
+                    help_text="设置回复模式「completely」完全匹配消息, 「part」消息中包含关键字",
                 ),
             ],
-            help_text="添加一个新的关键词回复"
+            help_text="添加一个新的关键词回复",
         ),
         Subcommand("remove", args=Args["key", str], help_text="删除一个已知的关键词回复"),
+        Subcommand("list", help_text="列出当前所有关键词回复"),
     ],
-    help_text="关键词回复"
+    help_text="关键词回复",
 )
 
 
@@ -148,6 +155,26 @@ async def keyRemove(app: Ariadne, group: Group, key: Query[str] = Query("remove.
         {GroupList.config: json.dumps(groupConfig, separators=(",", ":"))},
     )
     await app.send_group_message(group, MessageChain(f"关键字{key.result}已移除"))
+
+
+@listen(GroupMessage)
+@dispatch(AlconnaDispatcher(keyAlc, send_flag="post"))
+@decorate(
+    groupConfigRequire("keyReplaySwitch"),
+    Permission.require(Permission.GROUP_ADMIN),
+    match_path("list"),
+)
+async def keyList(app: Ariadne, group: Group, source: Source):
+    groupDB = await getGroup(group.id)
+    groupConfig = json.loads(groupDB.config)
+    msg = "以下均以 关键词 模式 概率 回复词的形式列出\n"
+    for i in groupConfig["keyReplayList"]:
+        repl = MessageChain.from_persistent_string(i["reply"]).display
+        msg += f'{i["key"]} {i["mode"]} {i["probability"]} {repl} \n'
+
+    await app.send_group_message(
+        group, MessageChain([Image(path=await textToImg(msg, True))]), quote=source
+    )
 
 
 @listen(GroupMessage)
