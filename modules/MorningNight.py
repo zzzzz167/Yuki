@@ -7,6 +7,7 @@ from graia.scheduler.timers import crontabify
 from graia.scheduler.saya.schema import SchedulerSchema
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Image, Plain
+from graia.ariadne.exception import UnknownTarget
 from utils.hitokoto import getHitokoto
 from utils.database import getGroupSetting
 
@@ -38,13 +39,16 @@ async def goodMorning(app: Ariadne):
     dailyNewsData = await getNews()
     count = 0
     for i in await getGroupSetting('goodTime'):
-        count += 1
-        await app.send_group_message(
-            int(i),
-            MessageChain(
-                [Plain(hito + "早安!\n"), Image(data_bytes=dailyNewsData)]
-            ),
-        )
+        try:
+            await app.send_group_message(
+                int(i),
+                MessageChain(
+                    [Plain(hito + "早安!\n"), Image(data_bytes=dailyNewsData)]
+                ),
+            )
+            count += 1
+        except UnknownTarget:
+            logger.error(f"群组{i}消息发送失败捏, 可能是群无了呢")
     logger.info("共计发送%s个群聊" % count)
 
 
@@ -53,13 +57,16 @@ async def goodNight(app: Ariadne):
     logger.info("开始发送晚安消息")
     count = 0
     for i in await getGroupSetting('goodTime'):
-        count += 1
-        await app.send_group_message(
-            int(i),
-            MessageChain(
-                [
-                    Plain("睡觉小助手提示您: 11点了子时睡觉养护阳气，百病不起。\n熬夜伤身体，早睡从我做起~\nGood Night!"),
-                ]
-            ),
-        )
+        try:
+            await app.send_group_message(
+                int(i),
+                MessageChain(
+                    [
+                        Plain("睡觉小助手提示您: 11点了子时睡觉养护阳气，百病不起。\n熬夜伤身体，早睡从我做起~\nGood Night!"),
+                    ]
+                ),
+            )
+            count += 1
+        except UnknownTarget:
+            logger.error(f"群组{i}消息发送失败捏, 可能是群无了呢")
     logger.info("共计发送%s个群聊" % count)

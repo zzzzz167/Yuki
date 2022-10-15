@@ -32,7 +32,7 @@ inc = InterruptControl(bcc)
 async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
     await app.send_friend_message(
         config.permission.Master,
-        MessageChain.create(
+        MessageChain(
             [
                 Plain("收到邀请入群事件"),
                 Plain(f"\n邀请者: {invite.supplicant} | {invite.nickname}"),

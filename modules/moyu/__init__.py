@@ -5,6 +5,7 @@ from graia.scheduler.timers import crontabify
 from graia.scheduler.saya.schema import SchedulerSchema
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain
+from graia.ariadne.exception import UnknownTarget
 from .getHolidays import getMoyuMsg
 from utils.database import getGroupSetting
 
@@ -23,6 +24,10 @@ async def goodMorning(app: Ariadne):
     count = 0
     msg = await getMoyuMsg()
     for i in await getGroupSetting('moyu'):
-        count += 1
-        await app.send_group_message(int(i), MessageChain([Plain(msg)]))
+        try:
+            await app.send_group_message(int(i), MessageChain([Plain(msg)]))
+            count += 1
+        except UnknownTarget:
+            logger.error(f"群组{i}消息发送失败捏, 可能是群无了呢")
+
     logger.info("共计发送%s个群聊" % count)
