@@ -9,7 +9,6 @@ from graia.ariadne.util.async_exec import io_bound
 
 exts = [
     "markdown.extensions.extra",
-    "markdown.extensions.codehilite",
     "markdown.extensions.tables",
     "markdown.extensions.toc",
 ]
@@ -63,21 +62,11 @@ def textToImg(text: str, force: bool = False, width: int = 512) -> str:
     return saveName
 
 
-@io_bound
-def markdownToImg(mdText: str, cssPath: str, width: int = 720) -> str:
-    cachePath = CACHEPATH + 'img/'
-    options = {"quiet": "", "encoding": "utf-8", "width": str(width)}
-    saveName = cachePath + hashlib.md5(mdText.encode("utf8")).hexdigest() + ".jpg"
-    if not os.path.exists(cachePath):
-        os.mkdir(cachePath)
-
-    if os.path.exists(saveName):
-        logger.info(f"Img-hash hit in {saveName}")
-        return saveName
-
-    html = markdown.markdown(mdText, extensipns=exts)
-    html = f'<div id="write">{html}</div>'
-    imgkit.from_string(html, saveName, css=cssPath, options=options)
+async def markdownToImg(mdText: str, cssName: str = "github") -> str:
+    temOp = {"cssName": cssName, "content": ""}
+    temOp["content"] = markdown.markdown(mdText, extensipns=exts)
+    logger.debug(temOp["content"])
+    saveName = await templateToImg("mdTemplate.html", temOp, viewport={'width': 800, 'height': 10})
     return saveName
 
 
