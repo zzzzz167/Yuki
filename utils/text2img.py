@@ -65,7 +65,6 @@ def textToImg(text: str, force: bool = False, width: int = 512) -> str:
 async def markdownToImg(mdText: str, cssName: str = "github") -> str:
     temOp = {"cssName": cssName, "content": ""}
     temOp["content"] = markdown.markdown(mdText, extensipns=exts)
-    logger.debug(temOp["content"])
     saveName = await templateToImg("mdTemplate.html", temOp, viewport={'width': 800, 'height': 10})
     return saveName
 
