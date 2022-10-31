@@ -59,7 +59,10 @@ async def getMaskBg(
         while emoji_write.get_size(nickname, 40)[0] + dot > l:
             nickname = nickname[:-1]
         nickname += "..."
-    pic_name = emoji_write.text2pic(nickname, "#FFFFFF", 40)
+    try:
+        pic_name = emoji_write.text2pic(nickname, "#FFFFFF", 40)
+    except ValueError:
+        pic_name = emoji_write.text2pic("    ", "#FFFFFF", 40)
     write_bg.paste(pic_name, (int((l - pic_name.size[0]) / 2), 5), mask=pic_name)
     info_pic = emoji_write.text2pic(info_text, "#FFFFFF", 35)
     write_bg.paste(info_pic, (int((l - info_pic.size[0]) / 2), 43), mask=info_pic)
