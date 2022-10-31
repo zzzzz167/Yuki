@@ -80,4 +80,5 @@ if __name__ == "__main__":
     try:
         app.launch_blocking()
     except KeyboardInterrupt:
+        app.stop()
         exit()

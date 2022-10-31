@@ -2,11 +2,13 @@ import time
 import aiohttp
 import asyncio
 from datetime import datetime
+from loguru import logger
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, Source, Image, ForwardNode, Forward
+from graia.ariadne.exception import UnknownTarget
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.saya import Channel
 from arclet.alconna import Alconna, Args, Option
@@ -134,4 +136,7 @@ async def searchPicture(
             )
             if level == "r18":
                 await asyncio.sleep(30)
-                await app.recall_message(s_msg)
+                try:
+                    await app.recall_message(s_msg)
+                except UnknownTarget:
+                    logger.warning("图太色了, 未能成功发送, 注意风控可能")

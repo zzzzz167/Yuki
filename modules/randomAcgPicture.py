@@ -1,13 +1,15 @@
 import time
-from datetime import datetime
 import aiohttp
 import asyncio
+from datetime import datetime
+from loguru import logger
 from utils.config import init_config
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, Source, Image, ForwardNode, Forward
+from graia.ariadne.exception import UnknownTarget
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args
@@ -85,7 +87,10 @@ async def randomPicture(
                 ),
             )
             await asyncio.sleep(30)
-            await app.recall_message(b_msg)
+            try:
+                await app.recall_message(b_msg)
+            except UnknownTarget:
+                logger.warning("图太色了, 未能成功发送, 注意风控可能")
         else:
             await app.send_group_message(
                 group,
