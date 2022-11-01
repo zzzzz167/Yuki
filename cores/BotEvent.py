@@ -2,7 +2,7 @@ import asyncio
 import json
 from loguru import logger
 from utils.config import init_config
-from utils.database import getGroupList, addGroup, updataGroup, GroupList
+from utils.database import getGroupList, addGroup, updataGroup, removeGroup, GroupList
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.ariadne.app import Ariadne
@@ -159,6 +159,13 @@ async def init_bot(app: Ariadne):
             count += 1
             await addGroup(i.id, i.name, groupDefConfig)
     logger.info("共 %s 个群未进行初始化,现已完成" % (count))
+    gpIdList = []
+    for n in gpList:
+        gpIdList.append(str(n.id))
+    differentDB = set(dataBaseList).difference(set(gpIdList))
+    for s in list(differentDB):
+        await removeGroup(s)
+    logger.info("删除完成 %s 个数据库中不存在的群聊配置" % (len(list(differentDB))))
 
 
 @channel.use(ListenerSchema(listening_events=[BotJoinGroupEvent]))

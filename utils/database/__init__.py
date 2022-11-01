@@ -116,6 +116,10 @@ async def addGroup(id, name, config):
     ag.save()
 
 
+async def removeGroup(id):
+    GroupList.delete().where(GroupList.group_id == id).execute()
+
+
 async def getGroupSetting(set: str) -> list:
     gs = GroupList().select()
     gs_r = []
