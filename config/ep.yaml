@@ -9,6 +9,7 @@ bot:
 Permission:
   Master: 12345678
   DefaultAcceptInvite: true
+  DefaultAcceptFriendReq: true
   Admin: []
   favor: 40
   cd: 30

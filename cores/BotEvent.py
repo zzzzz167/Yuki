@@ -15,6 +15,7 @@ from graia.ariadne.event.mirai import (
     MemberJoinEvent,
     MemberHonorChangeEvent,
     BotJoinGroupEvent,
+    NewFriendRequestEvent,
 )
 from graia.ariadne.event.lifecycle import ApplicationLaunched
 from graia.broadcast.interrupt.waiter import Waiter
@@ -176,3 +177,60 @@ async def get_BotJoinGroup(app: Ariadne, joingroup: BotJoinGroupEvent):
     await app.send_group_message(
         joingroup.group.id, MessageChain([Plain("我是Yuki,很高兴见到大家.\n发送.help可以查看功能列表")])
     )
+
+
+@channel.use(ListenerSchema(listening_events=[NewFriendRequestEvent]))
+async def newFriend(app: Ariadne, event: NewFriendRequestEvent):
+    await app.send_friend_message(
+        config.permission.Master,
+        MessageChain(
+            [
+                Plain("收到好友"),
+                Plain(f"\n邀请者: {event.nickname}({event.supplicant})"),
+                Plain(f"\n来源: {event.source_group}"),
+                Plain(f"\n申请消息: {event.message}"),
+                Plain("\n\n请发送“同意”或“拒绝”"),
+            ]
+        ),
+    )
+
+    @Waiter.create_using_function([FriendMessage])
+    async def waiter(waiter_friend: Friend, waiter_message: MessageChain):
+        if waiter_friend.id == config.permission.Master:
+            saying = waiter_message.display
+            if saying == "同意":
+                return True
+            elif saying == "拒绝":
+                return False
+            else:
+                await app.send_friend_message(
+                    config.permission.Master,
+                    MessageChain([Plain("请发送同意或拒绝")]),
+                )
+
+    try:
+        if await asyncio.wait_for(inc.wait(waiter), timeout=60):
+            await event.accept("你好呀 :D")
+            await app.send_friend_message(
+                config.permission.Master,
+                MessageChain([Plain("已同意申请")]),
+            )
+        else:
+            await event.reject("主人拒绝通过你的请求")
+            await app.send_friend_message(
+                config.permission.Master,
+                MessageChain([Plain("已拒绝申请")]),
+            )
+    except asyncio.TimeoutError:
+        if config.permission.DefaultAcceptFriendReq:
+            await event.accept("你好呀 :D")
+            await app.send_friend_message(
+                config.permission.Master,
+                MessageChain([Plain("已自动同意申请")]),
+            )
+        else:
+            await event.reject("由于主人长时间未审核，已自动拒绝")
+            await app.send_friend_message(
+                config.permission.Master,
+                MessageChain([Plain("申请超时已自动拒绝")]),
+            )

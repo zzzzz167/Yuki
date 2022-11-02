@@ -15,6 +15,7 @@ class Permission(BaseModel):
     Master: int
     Admin: list
     DefaultAcceptInvite: bool
+    DefaultAcceptFriendReq: bool
     favor: int
     cd: int
 
