@@ -1,11 +1,12 @@
 import random
 import json
 from utils.control import cheakBan, groupConfigRequire
+from utils.database import User, getUser, updataUser
 from graia.ariadne.app import Ariadne
 from graia.ariadne.model import Group, Member
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Plain, Image
+from graia.ariadne.message.element import Source, Plain, Image
 from arclet.alconna import Alconna
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from graia.ariadne.util.saya import listen, dispatch, decorate
@@ -27,11 +28,35 @@ everyDayTarotAlc = Alconna(headers=["."], command="每日塔罗", help_text="抽
 @listen(GroupMessage)
 @dispatch(AlconnaDispatcher(everyDayTarotAlc, send_flag="reply"))
 @decorate(groupConfigRequire("tarot"), cheakBan())
-async def everyTarot(app: Ariadne, group: Group, member: Member):
-    card = random.choice(TEMPLATES)
-    name = card["name"]
-    imageName = card["imageName"]
-    await app.send_group_message(
-        group,
-        MessageChain(Plain(f"今日塔罗:{name}"), Image(path=f"./source/tarot/{imageName}")),
-    )
+async def everyTarot(app: Ariadne, group: Group, member: Member, source: Source):
+    try:
+        userDB = await getUser(member.id)
+    except User.DoesNotExist:
+        await app.send_group_message(
+            group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :D")), quote=source
+        )
+        return
+    if userDB.every_tarot:
+        await app.send_group_message(
+            group, MessageChain(Plain("今天你已经领取过塔罗牌牌数了, 明天再来吧")), quote=source
+        )
+    else:
+        quantity = random.randint(0, 10)
+        orientation = random.choice(("顺位", "逆位"))
+        card = random.choice(TEMPLATES)
+        name = card["name"]
+        imagePath = "./source/tarot/" + card["imageName"]
+        await updataUser(
+            member.id, {User.every_tarot: True, User.tarot_quantity: quantity}
+        )
+        newdata = await getUser(member.id)
+        await app.send_group_message(
+            group,
+            MessageChain(
+                [
+                    Image(path=imagePath),
+                    Plain(f"\n你的今日塔罗:{name} - {orientation}"),
+                    Plain(f"\n获得今日抽牌次数:{newdata.tarot_quantity}"),
+                ]
+            ),
+        )
