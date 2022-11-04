@@ -11,7 +11,7 @@ from graia.ariadne.message.parser.twilight import (
 )
 from graia.saya import Channel, Saya
 from prompt_toolkit.styles import Style
-from utils.database import reset_sign, resetBanList, delBanList, addBanList
+from utils.database import reset_sign, resetBanList, delBanList, addBanList, reset_tarot
 from loguru import logger
 import time
 
@@ -40,7 +40,7 @@ async def restModule(console: Console, module: RegexResult):
         if res.lower() in ("y", "yes"):
             await reset_sign()
             logger.info("签到重置成功")
-    if str(module.result) == "ban":
+    elif str(module.result) == "ban":
         res: str = await console.prompt(
             l_prompt=[("class:warn", " 确定重置%s? " % (module.result)), ("", " (y/n) ")],
             style=Style([("warn", "fg:#cdb4db")]),
@@ -48,6 +48,14 @@ async def restModule(console: Console, module: RegexResult):
         if res.lower() in ("y", "yes"):
             await resetBanList()
             logger.info("黑名单重置成功")
+    elif str(module.result) == "tarot":
+        res: str = await console.prompt(
+            l_prompt=[("class:warn", " 确定重置%s? " % (module.result)), ("", " (y/n) ")],
+            style=Style([("warn", "fg:#cdb4db")]),
+        )
+        if res.lower() in ("y", "yes"):
+            await reset_tarot()
+            logger.info("每日塔罗重置成功")
 
 
 @channel.use(ConsoleSchema([Twilight.from_command("unban {id}")]))

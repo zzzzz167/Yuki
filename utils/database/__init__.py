@@ -185,6 +185,11 @@ async def reset_sign():
     return
 
 
+async def reset_tarot():
+    User.update(every_tarot=False).where(User.every_tarot).execute()
+    return
+
+
 async def addBanList(
     qqnum: int, ban_days: int, start_time: int, ban_tip: str = "自己了干什么心里没点数是吧"
 ):
