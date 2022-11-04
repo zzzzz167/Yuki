@@ -32,5 +32,6 @@ GroupDefaultPluginSwitch:
       sign: true
       moyu: true
       ill: true
+      tarot: true
       keyReplaySwitch: true
       keyReplayList: []

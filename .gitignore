@@ -139,3 +139,4 @@ cp_modules
 test/
 newbot.db
 unMountPlugin.pickle
+.DS_Store

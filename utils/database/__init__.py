@@ -66,6 +66,8 @@ class User(BaseModel):
     days = IntegerField(default=0)
     today = BooleanField(default=False)
     picture = IntegerField(default=0)
+    every_tarot = BooleanField(default=False)
+    tarot_quantity = IntegerField(default=0)
 
     class Meta:
         table_name = "UserInfo"
