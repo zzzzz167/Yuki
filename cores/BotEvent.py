@@ -3,6 +3,7 @@ import json
 from loguru import logger
 from utils.config import init_config
 from utils.database import getGroupList, addGroup, updataGroup, removeGroup, GroupList
+from utils.control import groupConfigRequire
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.ariadne.app import Ariadne
@@ -86,7 +87,11 @@ async def accept(app: Ariadne, invite: BotInvitedJoinGroupRequestEvent):
             )
 
 
-@channel.use(ListenerSchema(listening_events=[MemberJoinEvent]))
+@channel.use(
+    ListenerSchema(
+        listening_events=[MemberJoinEvent], decorators=[groupConfigRequire("welcome")]
+    )
+)
 async def getMemberJoinEvent(events: MemberJoinEvent, app: Ariadne):
     """
     有人加入群聊

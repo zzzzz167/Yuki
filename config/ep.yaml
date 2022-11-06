@@ -24,6 +24,8 @@ Plugins:
 GroupDefaultPluginSwitch:
   pluginSwitch:
     - power: true
+      welcome: true
+      announce: true
       status: true
       goodTime: true
       hito: true

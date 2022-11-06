@@ -75,7 +75,7 @@ async def everyTarot(app: Ariadne, group: Group, member: Member, source: Source)
                 [
                     Image(data_bytes=out.getvalue()),
                     Plain(f"\n你的今日塔罗:{name} - {orientation}"),
-                    Plain(f"\n获得今日抽牌次数:{newdata.tarot_quantity}"),
+                    Plain(f"\n获得今日抽牌次数:{newdata.tarot_quantity}\n"),
                     Image(path=await textToImg("关键词:" + card[pos])),
                 ]
             ),

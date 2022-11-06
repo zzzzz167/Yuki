@@ -15,8 +15,8 @@ from graia.broadcast.interrupt import InterruptControl
 from arclet.alconna import Alconna, Option, Args, Subcommand
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.graia import match_path, Query
-from utils.control import Permission, cheakBan, groupConfigRequire
-from utils.database import getGroup, updataGroup, GroupList
+from utils.control import Permission, groupConfigRequire
+from utils.database import cheakBanList, getGroup, updataGroup, GroupList
 from utils.text2img import textToImg
 
 channel = Channel.current()
@@ -178,8 +178,10 @@ async def keyList(app: Ariadne, group: Group, source: Source):
 
 
 @listen(GroupMessage)
-@decorate(groupConfigRequire("keyReplaySwitch"), cheakBan())
-async def replayFunc(app: Ariadne, group: Group, message: MessageChain):
+@decorate(groupConfigRequire("keyReplaySwitch"))
+async def replayFunc(app: Ariadne, group: Group, member: Member, message: MessageChain):
+    if await cheakBanList(member.id):
+        return
     groupDB = await getGroup(group.id)
     groupConfig = json.loads(groupDB.config)
     if ".key" in message.display:
