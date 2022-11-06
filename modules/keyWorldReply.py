@@ -170,7 +170,7 @@ async def keyList(app: Ariadne, group: Group, source: Source):
     msg = "以下均以 关键词 模式 概率 回复词的形式列出\n"
     for i in groupConfig["keyReplayList"]:
         repl = MessageChain.from_persistent_string(i["reply"]).display
-        msg += f'{i["key"]} {i["mode"]} {i["probability"]} {repl} \n'
+        msg += f'{i["key"]} {i["mode"]} {i["probability"]} {repr(repl)} \n'
 
     await app.send_group_message(
         group, MessageChain([Image(path=await textToImg(msg, True))]), quote=source
