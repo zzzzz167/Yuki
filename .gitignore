@@ -137,6 +137,6 @@ migrations/002_auto.py
 migrations/003_auto.py
 cp_modules
 test/
-newbot.db
+newbot*.db
 unMountPlugin.pickle
 .DS_Store

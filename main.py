@@ -46,7 +46,7 @@ app = Ariadne(
     config(account=bot_config.bot.account, verify_key=bot_config.mirai.verify_key),
 )
 app.launch_manager.add_service(FastAPIStarletteService())
-app.launch_manager.add_service(UvicornService())
+app.launch_manager.add_service(UvicornService(port=1141))
 
 ignore = ["__init__.py", "__pycache__"]
 

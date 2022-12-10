@@ -36,11 +36,41 @@ yapf = "^0.32.0"
 autopep8 = "^1.6.0"
 black = {version = "^22.1.0", allow-prereleases = true}
 
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "flake8<5.0.0,>=4.0.1",
+    "yapf<1.0.0,>=0.32.0",
+    "autopep8<2.0.0,>=1.6.0",
+    "black<23.0.0,>=22.1.0",
+]
+
+[tool.pdm.build]
+includes = []
+
+[[tool.pdm.source]]
+name = "aliyun"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+verify_ssl = true
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
 
 [[tool.poetry.source]]
 name = "aliyun"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 default = true
+[project]
+name = "yuki"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "zzzzz167", email = "2742400566@qq.com"},
+    {name = "xiaozhizhen",email = "2742400566@qq.com"},
+]
+dependencies = ["graia-ariadne[full]<1.0.0,>=0.9.6", "graia-saya<1.0.0,>=0.0.16", "PyYAML<7.0,>=6.0", "peewee<4.0.0,>=3.14.9", "graia-scheduler<1.0.0,>=0.0.8", "psutil<6.0.0,>=5.9.0", "peewee-migrate<2.0.0,>=1.4.7", "imgkit<2.0.0,>=1.2.2", "Pillow<9.0.0,>=8.1.2", "fonttools<5.0.0,>=4.29.1", "beautifulsoup4<5.0.0,>=4.10.0", "lxml<5.0.0,>=4.8.0", "arclet-alconna[full]<2.0.0,>=1.1.2", "prompt-toolkit<4.0.0,>=3.0.29", "rich<13.0.0,>=12.4.1", "markdown<4.0.0,>=3.4.1", "jinja2<4.0.0,>=3.1.2", "playwright<2.0.0,>=1.25.1", "arclet-alconna-graia<1.0.0,>=0.8.0", "fastapi<1.0.0,>=0.85.1", "uvicorn[standard]<1.0.0,>=0.18.3", "orjson<4.0.0,>=3.8.0"]
+requires-python = ">=3.9,<4.0"
+license = {text = "MIT"}
+
+[project.urls]
