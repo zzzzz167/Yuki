@@ -34,14 +34,14 @@ config = init_config()
 
 
 async def randomGet(r18: bool = False):
-    url = "http://a60.one:404"
+    url = "https://api.lolicon.app/setu/v2"
     if r18:
-        url += "?san=6&only=true"
+        url += "?r18=2"
     async with aiohttp.request("GET", url) as resp:
         rd = await resp.json()
-        data = rd["data"]["imgs"][0]
-        msg = f"标题:{data['name']}\n作者:{data['username']}\npid:{data['userid']}\n"
-    async with aiohttp.request("GET", data["url"]) as pcrp:
+        data = rd["data"][0]
+        msg = f"标题:{data['title']}\n作者:{data['author']}\npid:{data['pid']}\n"
+    async with aiohttp.request("GET", data["urls"]["original"]) as pcrp:
         byte = await pcrp.read()
     return [msg, byte]
 

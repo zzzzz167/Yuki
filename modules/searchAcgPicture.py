@@ -24,7 +24,7 @@ channel.description("简单的tag搜图, Eg: .搜索色图 xxx")
 channel.meta["switchKey"] = "searchAcgPic"
 channel.meta["icon"] = "pic.svg"
 
-levelToSan: dict = {"r12": 2, "r16": 4, "r18": 6}
+levelToSan: dict = {"r12": 0, "r16": 2, "r18": 1}
 
 searchPictureAlc = Alconna(
     ".搜索色图",
@@ -46,21 +46,21 @@ config = init_config()
 
 
 async def searchGet(tag: str, level: str = None):
-    url = "http://a60.one:404"
+    url = "https://api.lolicon.app/setu/v2"
     if level:
-        url += f"/get/tags/{tag}?num=1&only=true&san={levelToSan[level]}"
+        url += f"?r18={levelToSan[level]}&tag={tag}"
     else:
-        url += f"/get/tags/{tag}?num=1&only=false"
+        url += f"?tag={tag}"
     async with aiohttp.request("GET", url) as resp:
         rd = await resp.json()
-        if rd.get("code", 0) == 200:
-            data = rd["data"]["imgs"][0]
-            msg = f"标题:{data['name']}\n作者:{data['username']}\npid:{data['userid']}\n"
-            async with aiohttp.request("GET", data["url"]) as pcrp:
+        if len(rd["data"]) == 0:
+            return [None, None]
+        else:
+            data = rd["data"][0]
+            msg = f"标题:{data['title']}\n作者:{data['author']}\npid:{data['pid']}\n"
+            async with aiohttp.request("GET", data["urls"]["original"]) as pcrp:
                 byte = await pcrp.read()
             return [msg, byte]
-        else:
-            return [None, None]
 
 
 @listen(GroupMessage)
