@@ -14,7 +14,7 @@ from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.scheduler.timers import crontabify
 from graia.scheduler.saya.schema import SchedulerSchema
-from arclet.alconna import Alconna
+from arclet.alconna import Alconna, CommandMeta
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 
 
@@ -25,7 +25,7 @@ channel.description("每日签到, Eg: .sign")
 channel.meta["switchKey"] = "sign"
 channel.meta["icon"] = "heart.svg"
 
-signAlc = Alconna(".sign", help_text="每日签到")
+signAlc = Alconna(".sign", meta=CommandMeta("每日签到"))
 
 
 async def sign(app: Ariadne, group: Group, member: Member):

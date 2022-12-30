@@ -8,8 +8,8 @@ from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Source, Plain
 from graia.saya import Saya, Channel
-from arclet.alconna import Alconna, Option, Args
-from arclet.alconna.graia.dispatcher import AlconnaDispatcher, Arpamar
+from arclet.alconna import Alconna, Option, Args, Arparma, CommandMeta
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.graia import match_path
 from utils.control import Permission
 from loguru import logger
@@ -21,15 +21,14 @@ channel.description("bot插件全局管理, Eg: 「.saya reload ill 」重载发
 channel.meta["icon"] = "cog.svg"
 
 manageAlc = Alconna(
-    headers=["."],
-    command="saya",
-    options=[
-        Option("reloadAll", help_text="重载所有插件"),
-        Option("reload", Args["name", str], help_text="重载制定插件"),
-        Option("install", Args["name", str], help_text="装载制定插件"),
-        Option("uninstall", Args["name", str], help_text="卸载制定插件"),
-    ],
-    help_text="管理saya插件",
+    ".saya",
+    Option("reloadAll", help_text="重载所有插件"),
+    Option("reload", Args["name", str], help_text="重载制定插件"),
+    Option("install", Args["name", str], help_text="装载制定插件"),
+    Option("uninstall", Args["name", str], help_text="卸载制定插件"),
+    meta=CommandMeta(
+        "管理saya插件",
+    ),
     namespace="core",
 )
 
@@ -61,8 +60,8 @@ async def sayaAllReload(app: Ariadne, group: Group, source: Source):
 @listen(GroupMessage)
 @dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("reload"))
-async def reloadModule(app: Ariadne, group: Group, source: Source, res: Arpamar):
-    moduleName = "modules." + res.options["reload"]["name"]
+async def reloadModule(app: Ariadne, group: Group, source: Source, res: Arparma):
+    moduleName = "modules." + res.options["reload"]['args']["name"]
     if moduleName not in saya.channels:
         await app.send_group_message(
             group,
@@ -87,8 +86,8 @@ async def reloadModule(app: Ariadne, group: Group, source: Source, res: Arpamar)
 @listen(GroupMessage)
 @dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("install"))
-async def installModule(app: Ariadne, group: Group, source: Source, res: Arpamar):
-    moduleName = "modules." + res.options["install"]["name"]
+async def installModule(app: Ariadne, group: Group, source: Source, res: Arparma):
+    moduleName = "modules." + res.options["install"]['args']["name"]
     if moduleName in saya.channels:
         await app.send_group_message(
             group,
@@ -130,8 +129,8 @@ async def installModule(app: Ariadne, group: Group, source: Source, res: Arpamar
 @listen(GroupMessage)
 @dispatch(AlconnaDispatcher(manageAlc, send_flag="post"))
 @decorate(Permission.require(Permission.BOT_ADMIN), match_path("uninstall"))
-async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arpamar):
-    moduleName = "modules." + res.options["uninstall"]["name"]
+async def uninstallModule(app: Ariadne, group: Group, source: Source, res: Arparma):
+    moduleName = "modules." + res.options["uninstall"]['args']["name"]
     if moduleName not in saya.channels:
         await app.send_group_message(
             group,

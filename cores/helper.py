@@ -8,12 +8,13 @@ from graia.ariadne.message.element import Image, Source
 from graia.ariadne.util.saya import listen
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from arclet.alconna import Alconna
+from arclet.alconna import Alconna, CommandMeta
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaOutputMessage
 from graia.ariadne.event.message import MessageEvent
 from utils.control import cheakBan
 from utils.text2img import textToImg, templateToImg
 from utils.database import getGroup
+from loguru import logger
 
 
 saya = Saya.current()
@@ -22,7 +23,7 @@ channel.name("帮助")
 channel.description("生成帮助消息, Eg: .help/.插件 --help")
 channel.meta["icon"] = "help.svg"
 
-helperAlc = Alconna(headers=[".help", ".帮助"], help_text="帮助文档")
+helperAlc = Alconna(".help", meta=CommandMeta("帮助文档"))
 
 
 @channel.use(
@@ -82,6 +83,7 @@ async def groupHelper(app: Ariadne, group: Group, source: Source):
 
 @listen(AlconnaOutputMessage)
 async def pluginHelper(app: Ariadne, event: MessageEvent, output: str, source: Source):
+    logger.info(output)
     await app.send_group_message(
         event.sender.group,
         MessageChain([Image(path=await textToImg(output, True))]),

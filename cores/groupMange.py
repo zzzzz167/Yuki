@@ -4,8 +4,8 @@ from graia.ariadne.model import Group
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Source, Image
 from graia.ariadne.util.saya import listen, dispatch, decorate
-from arclet.alconna import Alconna, Args, Option
-from arclet.alconna.graia.dispatcher import AlconnaDispatcher, Arpamar
+from arclet.alconna import Alconna, Args, Option, Arparma, CommandMeta
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.graia import match_path
 from graia.saya import Channel
 from utils.control import Permission
@@ -34,9 +34,14 @@ pluginIntroduction = {
 ignoreKey = ["keyReplayList"]
 
 groupMange = Alconna(
-    headers=[".bot"],
-    options=[Option("config", Args["name", str]["switch", switch], help_text="设置插件开关,Eg: .bot config 「插件名」 「on|off」"), Option("list", help_text="得到所有配置键")],
-    help_text="群组bot管理",
+    ".bot",
+    Option(
+        "config",
+        Args["name", str]["switch", switch],
+        help_text="设置插件开关,Eg: .bot config 「插件名」 「on|off」",
+    ),
+    Option("list", help_text="得到所有配置键"),
+    meta=CommandMeta("群组bot管理"),
     namespace="core",
 )
 
@@ -44,8 +49,8 @@ groupMange = Alconna(
 @listen(GroupMessage)
 @dispatch(AlconnaDispatcher(groupMange, send_flag="post"))
 @decorate(Permission.require(Permission.GROUP_ADMIN), match_path("config"))
-async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arpamar):
-    pluginName = res.options["config"]["name"]
+async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arparma):
+    pluginName = res.options["config"]["args"]["name"]
     if pluginName in ignoreKey:
         await app.send_group_message(
             group, MessageChain(f"{pluginName}不可进行操作, 可使用.bot list查看插件名称"), quote=source
@@ -58,12 +63,12 @@ async def groupPluginsMange(app: Ariadne, group: Group, source: Source, res: Arp
         )
         return
 
-    if res.options["config"]["switch"] == "on":
+    if res.options["config"]["args"]["switch"] == "on":
         await changeGroupSet(group.id, pluginName, True)
         await app.send_group_message(
             group, MessageChain(f"{pluginName}已为本群组启用"), quote=source
         )
-    elif res.options["config"]["switch"] == "off":
+    elif res.options["config"]["args"]["switch"] == "off":
         await changeGroupSet(group.id, pluginName, False)
         await app.send_group_message(
             group, MessageChain(f"{pluginName}已为本群组停用"), quote=source

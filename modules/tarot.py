@@ -16,7 +16,7 @@ from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.scheduler.timers import crontabify
 from graia.scheduler.saya.schema import SchedulerSchema
 from graia.saya import Saya, Channel
-from arclet.alconna import Alconna
+from arclet.alconna import Alconna, CommandMeta
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 
 
@@ -30,7 +30,7 @@ channel.meta["icon"] = "star.svg"
 with open("./source/tarot/data.min.json", "r", encoding="UTF-8") as f:
     TEMPLATES = json.loads(f.read())["tarot"]
 
-everyDayTarotAlc = Alconna(headers=["."], command="每日塔罗", help_text="抽取每日塔罗牌")
+everyDayTarotAlc = Alconna(".每日塔罗", meta=CommandMeta("抽取每日塔罗牌"))
 
 
 @listen(GroupMessage)

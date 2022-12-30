@@ -12,8 +12,8 @@ from graia.ariadne.message.element import Plain, Source, Image, ForwardNode, For
 from graia.ariadne.exception import UnknownTarget
 from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.saya import Channel
-from arclet.alconna import Alconna, Args, Option
-from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
+from arclet.alconna import Alconna, Args, Option, CommandMeta, Empty, Arparma
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from utils.control import cheakAcgpicture, cheakBan, groupConfigRequire
 from utils.database import updataGroup, getUser, GroupList
 from utils.config import init_config
@@ -29,19 +29,17 @@ levelToSan: dict = {"r12": 0, "r16": 2, "r18": 1}
 
 searchPictureAlc = Alconna(
     ".搜索色图",
-    Args["content;0", str],
-    options=[
-        Option(
+    Args["content", str, Empty],
+    Option(
+        "level",
+        Args[
             "level",
-            Args[
-                "level",
-                str,
-            ],
-            alias=["-L", "--level"],
-            help_text="搜图所返回的等级包括[r12,r16, r18],默认为r16",
-        )
-    ],
-    help_text="简单的tag搜图",
+            str,
+        ],
+        alias=["-L", "--level"],
+        help_text="搜图所返回的等级包括[r12,r16, r18],默认为r16",
+    ),
+    meta=CommandMeta("简单的tag搜图"),
 )
 config = init_config()
 
@@ -69,15 +67,17 @@ async def searchGet(tag: str, level: str = None):
 @dispatch(AlconnaDispatcher(searchPictureAlc, send_flag="post"))
 @decorate(cheakBan(), groupConfigRequire("searchAcgPic"), cheakAcgpicture())
 async def searchPicture(
-    app: Ariadne, group: Group, member: Member, source: Source, result: AlconnaProperty
+    app: Ariadne, group: Group, member: Member, source: Source, result: Arparma
 ):
-    arp = result.result
-    contents = arp.content[0]  # TODO 类型检查修复
-    level = arp.query("level.level")
+
+    logger.debug(result)
+
+    arp = result.main_args
+    contents = arp["content"]
+    level = result.query("level.level")
     er = False
     try:
         user = await getUser(member.id)
-    # TODO 类型检查修复
     except DoesNotExist:
         await app.send_group_message(
             group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :)")), quote=source

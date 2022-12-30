@@ -8,8 +8,8 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.model import Group, Member
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from arclet.alconna import Alconna, Args, Empty
-from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
+from arclet.alconna import Alconna, Args, Empty, CommandMeta, Arparma
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from utils.control import cheakBan, groupConfigRequire
 from utils.database import addBanList
 
@@ -24,9 +24,9 @@ with open("./source/ill/data.json", "r", encoding="UTF-8") as f:
     TEMPLATES = json.loads(f.read())["data"]
 
 ill = Alconna(
-    headers=[".发病"],
-    main_args=Args["content;0", [str, At], Empty],
-    help_text="生成一段发病文字 Example: .发病 老公;",
+    ".发病",
+    Args["content", [str, At], Empty],
+    meta=CommandMeta("生成一段发病文字 Example: .发病 老公;"),
 )
 
 
@@ -37,9 +37,9 @@ ill = Alconna(
         decorators=[cheakBan(), groupConfigRequire("ill")],
     )
 )
-async def fabing(app: Ariadne, member: Member, group: Group, result: AlconnaProperty):
-    if result.result.content:
-        content = result.result.content[0]
+async def fabing(app: Ariadne, member: Member, group: Group, result: Arparma):
+    if result.main_args["content"]:
+        content = result.main_args["content"]
         if type(content) == At:
             obj = await app.get_member(group, content.target)
             target = obj.name

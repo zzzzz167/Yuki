@@ -13,8 +13,8 @@ from graia.ariadne.message.element import Plain, Source, Image, ForwardNode, For
 from graia.ariadne.exception import UnknownTarget
 from graia.saya import Saya, Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from arclet.alconna import Alconna, Args
-from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
+from arclet.alconna import Alconna, Args, CommandMeta, Empty, Arparma
+from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from utils.control import cheakAcgpicture, cheakBan, groupConfigRequire
 from utils.database import updataGroup, getUser, GroupList
 
@@ -26,9 +26,9 @@ channel.meta["switchKey"] = "randomAcgPic"
 channel.meta["icon"] = "random.svg"
 
 randomPictureAlc = Alconna(
-    headers=[".setu"],
-    main_args=Args["content;O", str],
-    help_text="在群中发送 .setu [r18]即可获得色图",
+    ".setu",
+    Args["content", str, Empty],
+    meta=CommandMeta("在群中发送 .setu [r18]即可获得色图"),
 )
 
 config = init_config()
@@ -50,14 +50,12 @@ async def randomGet(r18: bool = False):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        inline_dispatchers=[
-            AlconnaDispatcher(randomPictureAlc, send_flag="post")
-        ],
-        decorators=[cheakBan(), groupConfigRequire('randomAcgPic'), cheakAcgpicture()],
+        inline_dispatchers=[AlconnaDispatcher(randomPictureAlc, send_flag="post")],
+        decorators=[cheakBan(), groupConfigRequire("randomAcgPic"), cheakAcgpicture()],
     )
 )
 async def randomPicture(
-    app: Ariadne, group: Group, member: Member, source: Source, result: AlconnaProperty
+    app: Ariadne, group: Group, member: Member, source: Source, result: Arparma
 ):
     try:
         user = await getUser(member.id)
@@ -66,7 +64,7 @@ async def randomPicture(
             group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :)")), quote=source
         )
         return
-    if result.result.content == "r18":
+    if result.main_args["content"] == "r18":
         if user.favor >= config.permission.favor:
             await app.send_group_message(group, MessageChain("色小鬼,色图马上就来喽,稍等一下"))
             await updataGroup(group.id, {GroupList.acgPictureUse: time.time()})
@@ -104,7 +102,7 @@ async def randomPicture(
                 ),
                 quote=source,
             )
-    elif result.result.content:
+    elif result.main_args["content"]:
         await app.send_group_message(
             group, MessageChain("呜,你输入的指令似乎有错误哦,检查后再来看看吧"), quote=source
         )

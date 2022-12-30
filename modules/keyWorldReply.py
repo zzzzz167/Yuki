@@ -12,7 +12,7 @@ from graia.ariadne.message.element import Source, Image
 from graia.saya import Channel
 from graia.broadcast.interrupt.waiter import Waiter
 from graia.broadcast.interrupt import InterruptControl
-from arclet.alconna import Alconna, Option, Args, Subcommand
+from arclet.alconna import Alconna, Option, Args, Subcommand, CommandMeta
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from arclet.alconna.graia import match_path, Query
 from utils.control import Permission, groupConfigRequire
@@ -28,32 +28,29 @@ channel.meta["icon"] = "chat.svg"
 inc = create(InterruptControl)
 
 keyAlc = Alconna(
-    headers=["."],
-    command="keyReply",
-    options=[
-        Subcommand(
-            "add",
-            args=Args["key", str],
-            options=[
-                Option(
-                    "probability",
-                    Args["prob", float, 0.6],
-                    alias=["-P"],
-                    help_text="设置回复概率,区间为0~1",
-                ),
-                Option(
-                    "mode",
-                    Args["modele", ["completely", "part"], "completely"],
-                    alias=["-M"],
-                    help_text="设置回复模式「completely」完全匹配消息, 「part」消息中包含关键字",
-                ),
-            ],
-            help_text="添加一个新的关键词回复",
-        ),
-        Subcommand("remove", args=Args["key", str], help_text="删除一个已知的关键词回复"),
-        Subcommand("list", help_text="列出当前所有关键词回复"),
-    ],
-    help_text="关键词回复",
+    ".keyReply",
+    Subcommand(
+        "add",
+        args=Args["key", str],
+        options=[
+            Option(
+                "probability",
+                Args["prob", float, 0.6],
+                alias=["-P"],
+                help_text="设置回复概率,区间为0~1",
+            ),
+            Option(
+                "mode",
+                Args["modele", ["completely", "part"], "completely"],
+                alias=["-M"],
+                help_text="设置回复模式「completely」完全匹配消息, 「part」消息中包含关键字",
+            ),
+        ],
+        help_text="添加一个新的关键词回复",
+    ),
+    Subcommand("remove", args=Args["key", str], help_text="删除一个已知的关键词回复"),
+    Subcommand("list", help_text="列出当前所有关键词回复"),
+    meta=CommandMeta("关键词回复"),
 )
 
 

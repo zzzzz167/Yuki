@@ -6,7 +6,7 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Image, Source
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
-from arclet.alconna import Alconna
+from arclet.alconna import Alconna, CommandMeta
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from utils.control import cheakBan, groupConfigRequire
 from utils.text2img import textToImg
@@ -17,7 +17,7 @@ channel.description("获取bot当前运行状态, Eg: .status")
 channel.meta["switchKey"] = "status"
 channel.meta["icon"] = "speedometer.svg"
 
-statusAlc = Alconna(headers=[".status"], help_text="运行状态检查")
+statusAlc = Alconna(".status", meta=CommandMeta("运行状态检查"))
 
 
 def general_system_status() -> str:
