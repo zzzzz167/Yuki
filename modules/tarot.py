@@ -3,6 +3,7 @@ import json
 from io import BytesIO
 from loguru import logger
 from PIL import Image as Img
+from peewee import DoesNotExist
 from utils.control import cheakBan, groupConfigRequire
 from utils.database import User, getUser, updataUser, reset_tarot
 from utils.text2img import textToImg
@@ -38,7 +39,7 @@ everyDayTarotAlc = Alconna(headers=["."], command="每日塔罗", help_text="抽
 async def everyTarot(app: Ariadne, group: Group, member: Member, source: Source):
     try:
         userDB = await getUser(member.id)
-    except User.DoesNotExist:
+    except DoesNotExist:
         await app.send_group_message(
             group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :D")), quote=source
         )

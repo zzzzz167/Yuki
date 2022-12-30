@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime
 from loguru import logger
 from utils.config import init_config
+from peewee import DoesNotExist
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
@@ -15,7 +16,7 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from arclet.alconna import Alconna, Args
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
 from utils.control import cheakAcgpicture, cheakBan, groupConfigRequire
-from utils.database import updataGroup, getUser, GroupList, User
+from utils.database import updataGroup, getUser, GroupList
 
 saya = Saya.current()
 channel = Channel.current()
@@ -60,7 +61,7 @@ async def randomPicture(
 ):
     try:
         user = await getUser(member.id)
-    except User.DoesNotExist:
+    except DoesNotExist:
         await app.send_group_message(
             group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :)")), quote=source
         )

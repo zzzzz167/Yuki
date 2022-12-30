@@ -3,6 +3,7 @@ import aiohttp
 import asyncio
 from datetime import datetime
 from loguru import logger
+from peewee import DoesNotExist
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
@@ -14,7 +15,7 @@ from graia.saya import Channel
 from arclet.alconna import Alconna, Args, Option
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher, AlconnaProperty
 from utils.control import cheakAcgpicture, cheakBan, groupConfigRequire
-from utils.database import updataGroup, getUser, GroupList, User
+from utils.database import updataGroup, getUser, GroupList
 from utils.config import init_config
 
 
@@ -45,6 +46,7 @@ searchPictureAlc = Alconna(
 config = init_config()
 
 
+# TODO 类型检查修复
 async def searchGet(tag: str, level: str = None):
     url = "https://api.lolicon.app/setu/v2"
     if level:
@@ -70,12 +72,13 @@ async def searchPicture(
     app: Ariadne, group: Group, member: Member, source: Source, result: AlconnaProperty
 ):
     arp = result.result
-    contents = arp.content[0]
+    contents = arp.content[0]  # TODO 类型检查修复
     level = arp.query("level.level")
     er = False
     try:
         user = await getUser(member.id)
-    except User.DoesNotExist:
+    # TODO 类型检查修复
+    except DoesNotExist:
         await app.send_group_message(
             group, MessageChain(Plain("您似乎从来没有签过到呢,先签个到吧 :)")), quote=source
         )
@@ -105,7 +108,7 @@ async def searchPicture(
     if er is False:
         await app.send_group_message(group, MessageChain("色图马上就来喽,稍等一下"))
         if level:
-            data = await searchGet(contents, level=level)
+            data = await searchGet(contents, level=level)  # TODO 类型检查修复
         else:
             data = await searchGet(contents)
         if data[0] is None:

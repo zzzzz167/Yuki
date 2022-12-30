@@ -2,7 +2,9 @@
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
     "python.formatting.provider": "black",
-    "python.linting.flake8Args": ["--ignore=E501", "--max-line-length=120"],
+    "python.linting.flake8Args": ["--ignore=E501"],
+    "flake8.args": ["--ignore=E501"],
+    "python.linting.pep8Args": ["--ignore=E501"],
     "sqltools.connections": [
         {
             "previewLimit": 50,
@@ -14,5 +16,6 @@
     "sqltools.useNodeRuntime": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": "active",
-    "todo-tree.tree.scanMode": "workspace"
+    "todo-tree.tree.scanMode": "workspace",
+    "python.analysis.typeCheckingMode": "basic"
 }

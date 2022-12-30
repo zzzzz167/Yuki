@@ -191,7 +191,7 @@ async def reset_tarot():
 
 
 async def addBanList(
-    qqnum: int, ban_days: int, start_time: int, ban_tip: str = "自己了干什么心里没点数是吧"
+    qqnum: int, ban_days: int, start_time: float, ban_tip: str = "自己了干什么心里没点数是吧"
 ):
     ab = BanList(qq_id=qqnum, ban_days=ban_days, start_time=start_time, ban_tip=ban_tip)
     ab.save()
