@@ -9,6 +9,7 @@ from arclet.alconna import Alconna, Args, CommandMeta, Empty, Arparma, Option
 from arclet.alconna.graia.dispatcher import AlconnaDispatcher
 from utils.control import cheakBan, groupConfigRequire
 from utils.text2img import templateToImg
+from utils.messageTool import moreFriendlyEscape
 
 channel = Channel.current()
 channel.name("入典")
@@ -42,15 +43,16 @@ async def dianPic(
             group, MessageChain("回复消息或手动输入内容时可用"), quote=source
         )
         return
-    if not (text := content):
+    if not (content):
         try:
             event: MessageEvent = await app.get_message_from_id(
                 event.quote.id, event.sender.group
             )
-            text = event.message_chain.display
+            content = event.message_chain
         except UnknownTarget:
             app.send_group_message(group, MessageChain("未缓存该消息"), quote=source)
             return
+    text = await moreFriendlyEscape(app, content, group)
     metadata = {
         "qqnum": event.sender.id,
         "content": text,
