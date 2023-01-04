@@ -50,6 +50,8 @@
             font-style: italic;
         }
     </style>
+    <script src="{{path}}/source/js/jquery.min.js"></script>
+    <script src="{{path}}/source/js/jquery.textfill.min.js"></script>
 </head>
 
 <body>
@@ -61,12 +63,19 @@
              align-content: center;
              justify-content: center;
              align-items: center;
-             flex-direction: column;
-    ">
-            <p class="text text-margin"> {{content}} </p>
+             flex-direction: column;">
+            <p class="text text-margin" id="content" style="max-height: 600px;">
+                <span>
+                    {{content}}
+                </span>
+            </p>
             <p class="subtext text-margin"> @{{name}} </p>
         </div>
     </div>
 </body>
-
+<script>
+    $('#content').textfill({
+        maxFontPixels: 70,
+    });
+</script>
 </html>
